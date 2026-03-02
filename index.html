@@ -4,1580 +4,750 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a1628">
-<meta name="description" content="Simulation numérique de tsunami - méthode Shallow Water Equations">
 <link rel="manifest" href="manifest.json">
-<title>TsunamiSim — Simulation Numérique</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>TsunamiSim</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #060d1a;
-  --panel: #0c1829;
-  --panel2: #0f2040;
-  --border: #1a3a5c;
-  --accent: #00d4ff;
-  --accent2: #ff6b35;
-  --accent3: #00ff9d;
-  --water: #006994;
-  --water-light: #00b4d8;
-  --sand: #c9a96e;
-  --text: #cce4f0;
-  --text-dim: #4a7a9b;
-  --red: #ff4444;
-  --yellow: #ffcc00;
-  --mono: 'JetBrains Mono', monospace;
-  --display: 'Bebas Neue', sans-serif;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* HEADER */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--border);
-  background: var(--panel);
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.logo {
-  font-family: var(--display);
-  font-size: 1.8rem;
-  letter-spacing: 3px;
-  color: var(--accent);
-  text-shadow: 0 0 20px rgba(0,212,255,0.4);
-}
-.logo span { color: var(--accent2); }
-
-.status-bar {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  font-size: 0.72rem;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-.stat-label { color: var(--text-dim); font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
-.stat-value { color: var(--accent); font-weight: 600; font-size: 0.8rem; }
-.stat-value.warn { color: var(--yellow); }
-.stat-value.danger { color: var(--red); }
-
-.btn {
-  padding: 6px 16px;
-  border: 1px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-transform: uppercase;
-}
-.btn:hover { background: rgba(0,212,255,0.1); }
-.btn.active, .btn.primary { background: var(--accent); color: var(--bg); }
-.btn.danger-btn { border-color: var(--red); color: var(--red); }
-.btn.danger-btn:hover { background: rgba(255,68,68,0.1); }
-.btn.success-btn { border-color: var(--accent3); color: var(--accent3); }
-.btn.success-btn:hover { background: rgba(0,255,157,0.1); }
-
-/* MAIN LAYOUT */
-.main {
-  display: grid;
-  grid-template-columns: 280px 1fr 280px;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* PANELS */
-.panel {
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.panel.right { border-right: none; border-left: 1px solid var(--border); }
-
-.panel-section {
-  border-bottom: 1px solid var(--border);
-  padding: 12px;
-}
-
-.section-title {
-  font-size: 0.6rem;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.section-title::before {
-  content: '';
-  width: 3px;
-  height: 10px;
-  background: var(--accent);
-  display: inline-block;
-}
-
-.form-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  gap: 8px;
-}
-.form-label {
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  white-space: nowrap;
-  flex-shrink: 0;
-  min-width: 90px;
-}
-.form-input {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  padding: 4px 8px;
-  width: 100%;
-  transition: border-color 0.15s;
-}
-.form-input:focus { outline: none; border-color: var(--accent); }
-.form-input[type=range] {
-  -webkit-appearance: none;
-  height: 4px;
-  background: var(--border);
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-.form-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px; height: 12px;
-  background: var(--accent);
-  border-radius: 50%;
-}
-
-.unit { font-size: 0.6rem; color: var(--text-dim); margin-left: 4px; white-space: nowrap; }
-
-/* CANVAS AREA */
-.sim-area {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
-
-.canvas-wrapper {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  background: #030810;
-}
-
-canvas {
-  display: block;
-  image-rendering: pixelated;
-}
-
-#simCanvas {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.overlay-info {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(6,13,26,0.85);
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-  font-size: 0.65rem;
-  pointer-events: none;
-  backdrop-filter: blur(4px);
-}
-
-.time-display {
-  font-family: var(--display);
-  font-size: 1.4rem;
-  color: var(--accent);
-  letter-spacing: 2px;
-}
-
-/* BOTTOM BAR */
-.bottom-bar {
-  background: var(--panel);
-  border-top: 1px solid var(--border);
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-}
-
-.controls-group {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.progress-section {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.progress-bar-outer {
-  flex: 1;
-  height: 4px;
-  background: var(--border);
-  position: relative;
-}
-.progress-bar-inner {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  transition: width 0.1s;
-}
-
-/* BATHYMETRY EDITOR */
-.bath-canvas-wrapper {
-  position: relative;
-  border: 1px solid var(--border);
-  cursor: crosshair;
-  background: var(--bg);
-}
-
-#bathCanvas {
-  display: block;
-  width: 100%;
-  height: 120px;
-}
-
-.bath-tools {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-}
-
-.tool-btn {
-  padding: 3px 8px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-dim);
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.tool-btn:hover, .tool-btn.active { border-color: var(--accent); color: var(--accent); }
-
-/* COLORBAR */
-.colorbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.6rem;
-  color: var(--text-dim);
-  margin-top: 4px;
-}
-.colorbar-gradient {
-  flex: 1;
-  height: 8px;
-  background: linear-gradient(90deg, #030810, #006994, #00b4d8, #90e0ef, #caf0f8);
-  border: 1px solid var(--border);
-}
-
-/* MINI STATS */
-.mini-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-}
-.mini-stat {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 6px;
-  text-align: center;
-}
-.mini-stat-val { font-size: 0.85rem; color: var(--accent3); font-weight: 600; }
-.mini-stat-lbl { font-size: 0.55rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-
-/* scrollbar */
-.panel::-webkit-scrollbar { width: 4px; }
-.panel::-webkit-scrollbar-track { background: var(--bg); }
-.panel::-webkit-scrollbar-thumb { background: var(--border); }
-
-/* Wave plot */
-#wavePlot {
-  width: 100%;
-  height: 80px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  display: block;
-}
-
-.indicator {
-  display: inline-block;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--text-dim);
-  margin-right: 6px;
-  transition: background 0.3s;
-}
-.indicator.running { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); animation: pulse 1s infinite; }
-.indicator.paused { background: var(--yellow); }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-select.form-input {
-  background: var(--bg);
-  color: var(--text);
-  cursor: pointer;
-}
-
-.sep { width: 1px; height: 24px; background: var(--border); }
-
-.warn-banner {
-  background: rgba(255,106,53,0.1);
-  border: 1px solid var(--accent2);
-  color: var(--accent2);
-  font-size: 0.62rem;
-  padding: 4px 8px;
-  margin-bottom: 6px;
-  display: none;
-}
+:root{--bg:#060d1a;--panel:#0c1829;--border:#1a3a5c;--accent:#00d4ff;--accent2:#ff6b35;--accent3:#00ff9d;--text:#cce4f0;--dim:#4a7a9b;--red:#ff4444;--yellow:#ffcc00;--mono:'JetBrains Mono',monospace;--display:'Bebas Neue',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);display:flex;flex-direction:column;}
+header{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.logo{font-family:var(--display);font-size:1.7rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 20px rgba(0,212,255,.4);}
+.logo span{color:var(--accent2);}
+.hs{display:flex;gap:14px;align-items:center;}
+.hs-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.hs-l{color:var(--dim);font-size:.56rem;letter-spacing:1px;text-transform:uppercase;}
+.hs-v{color:var(--accent);font-weight:600;font-size:.76rem;min-width:72px;text-align:center;}
+.hs-v.w{color:var(--yellow);}.hs-v.d{color:var(--red);}
+.hbtns{display:flex;gap:6px;align-items:center;}
+.btn{padding:5px 13px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:var(--mono);font-size:.66rem;letter-spacing:1px;cursor:pointer;transition:all .15s;text-transform:uppercase;}
+.btn:hover{background:rgba(0,212,255,.12);}.btn.primary{background:var(--accent);color:var(--bg);}
+.btn.ok{border-color:var(--accent3);color:var(--accent3);}.btn.ok:hover{background:rgba(0,255,157,.1);}
+.btn.bad{border-color:var(--red);color:var(--red);}.btn.bad:hover{background:rgba(255,68,68,.1);}
+.btn.wrn{border-color:var(--yellow);color:var(--yellow);}.btn.wrn:hover{background:rgba(255,204,0,.1);}
+.ind{width:8px;height:8px;border-radius:50%;background:var(--dim);transition:all .3s;}
+.ind.run{background:var(--accent3);box-shadow:0 0 6px var(--accent3);animation:pu 1s infinite;}
+.ind.pause{background:var(--yellow);}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.35}}
+.main{display:grid;grid-template-columns:268px 1fr 268px;flex:1;min-height:0;}
+.panel{background:var(--panel);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
+.panel.L{border-right:1px solid var(--border);}.panel.R{border-left:1px solid var(--border);}
+.panel::-webkit-scrollbar{width:3px;}.panel::-webkit-scrollbar-thumb{background:var(--border);}
+.ps{border-bottom:1px solid var(--border);padding:10px 11px;}
+.pst{font-size:.57rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.pst::before{content:'';width:3px;height:8px;background:var(--accent);display:inline-block;}
+.fr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:5px;}
+.fl{font-size:.61rem;color:var(--dim);white-space:nowrap;flex-shrink:0;min-width:82px;}
+.fi{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:.68rem;padding:3px 7px;width:100%;transition:border-color .15s;}
+.fi:focus{outline:none;border-color:var(--accent);}
+.fi[type=range]{-webkit-appearance:none;height:3px;background:var(--border);border:none;padding:0;cursor:pointer;}
+.fi[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--accent);border-radius:50%;}
+select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(--dim);margin-left:2px;white-space:nowrap;}
+.ci{font-size:.57rem;color:var(--dim);margin-top:2px;}
+.sim-area{display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.cw{flex:1;position:relative;overflow:hidden;background:#020a14;}
+#sc{width:100%;height:100%;display:block;}
+.ov{position:absolute;top:8px;left:8px;background:rgba(4,10,22,.9);border:1px solid var(--border);padding:7px 11px;pointer-events:none;backdrop-filter:blur(3px);}
+.bt2{font-family:var(--display);font-size:1.45rem;color:var(--accent);letter-spacing:2px;}
+.pt{font-size:.6rem;margin-top:3px;color:var(--dim);}
+.bb{background:var(--panel);border-top:1px solid var(--border);padding:6px 13px;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:nowrap;}
+.tb{padding:3px 7px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:var(--mono);font-size:.58rem;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.tb:hover,.tb.active{border-color:var(--accent);color:var(--accent);}
+.sep{width:1px;height:18px;background:var(--border);flex-shrink:0;}
+.cbw{display:flex;align-items:center;gap:5px;flex:1;min-width:0;}
+.cbg{flex:1;height:6px;border:1px solid var(--border);}
+.cbl{font-size:.57rem;color:var(--dim);white-space:nowrap;}
+#bc{display:block;width:100%;height:108px;cursor:crosshair;background:#020a14;border:1px solid var(--border);}
+.btools{display:flex;gap:3px;margin-bottom:5px;flex-wrap:wrap;}
+.bt3{padding:2px 6px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:var(--mono);font-size:.57rem;cursor:pointer;transition:all .15s;}
+.bt3:hover,.bt3.active{border-color:var(--accent);color:var(--accent);}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+.ms{background:var(--bg);border:1px solid var(--border);padding:5px;text-align:center;}
+.msv{font-size:.8rem;color:var(--accent3);font-weight:600;}.msl{font-size:.5rem;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;}
+#wp{display:block;width:100%;height:72px;background:var(--bg);border:1px solid var(--border);}
+#rg{display:block;width:100%;height:52px;background:var(--bg);border:1px solid var(--border);}
+.lb{font-size:.57rem;color:var(--dim);height:100px;overflow-y:auto;line-height:1.7;padding:2px;}
+.lb::-webkit-scrollbar{width:3px;}.lb::-webkit-scrollbar-thumb{background:var(--border);}
+.le{border-left:2px solid var(--border);padding-left:4px;margin-bottom:1px;}
+.le.ok{border-color:var(--accent3);}.le.w{border-color:var(--yellow);}.le.e{border-color:var(--red);}
+.ex{display:block;width:100%;text-align:left;padding:5px 7px;margin-bottom:3px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s;}
+.ex:hover{border-color:var(--accent2);color:var(--text);background:rgba(255,107,53,.07);}
+.ex strong{color:var(--accent2);display:block;font-size:.63rem;}
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">TSUNAMI<span>SIM</span></div>
-  <div class="status-bar">
-    <div class="stat">
-      <span class="stat-label">Temps sim.</span>
-      <span class="stat-value" id="hdrTime">0.00 s</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Δt actuel</span>
-      <span class="stat-value" id="hdrDt">— s</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">CFL</span>
-      <span class="stat-value" id="hdrCfl">—</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">It/s</span>
-      <span class="stat-value" id="hdrIps">—</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">h max</span>
-      <span class="stat-value" id="hdrHmax">— m</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">v max</span>
-      <span class="stat-value" id="hdrVmax">— m/s</span>
-    </div>
-    <div class="sep"></div>
-    <div class="stat">
-      <span class="stat-label">Grille</span>
-      <span class="stat-value" id="hdrGrid">—</span>
-    </div>
+  <div class="hs">
+    <div class="hs-item"><span class="hs-l">Temps sim.</span><span class="hs-v" id="hT">0.00 s</span></div>
+    <div class="hs-item"><span class="hs-l">Δt</span><span class="hs-v" id="hDt">—</span></div>
+    <div class="hs-item"><span class="hs-l">CFL</span><span class="hs-v" id="hCfl">—</span></div>
+    <div class="hs-item"><span class="hs-l">It/s</span><span class="hs-v" id="hIps">—</span></div>
+    <div class="hs-item"><span class="hs-l">η max</span><span class="hs-v" id="hHmax">—</span></div>
+    <div class="hs-item"><span class="hs-l">|V| max</span><span class="hs-v" id="hVmax">—</span></div>
+    <div class="hs-item"><span class="hs-l">Grille</span><span class="hs-v" id="hGrid">—</span></div>
+    <div class="hs-item"><span class="hs-l">Accel.</span><span class="hs-v" id="hSpd">—</span></div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center;">
-    <span class="indicator" id="statusIndicator"></span>
-    <button class="btn primary" id="btnInit">INIT</button>
-    <button class="btn success-btn" id="btnRun">▶ RUN</button>
-    <button class="btn" id="btnPause">⏸ PAUSE</button>
-    <button class="btn danger-btn" id="btnReset">↺ RESET</button>
+  <div class="hbtns">
+    <div class="ind" id="ind"></div>
+    <button class="btn primary" id="bInit">INIT</button>
+    <button class="btn ok" id="bRun">▶ RUN</button>
+    <button class="btn wrn" id="bPause">⏸ PAUSE</button>
+    <button class="btn bad" id="bReset">↺ RESET</button>
   </div>
 </header>
 
 <div class="main">
-  <!-- LEFT PANEL: Parameters -->
-  <div class="panel">
-    
-    <div class="panel-section">
-      <div class="section-title">Domaine physique</div>
-      <div class="form-row">
-        <span class="form-label">Longueur X</span>
-        <input class="form-input" type="number" id="domainX" value="50000" min="100"><span class="unit">m</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Hauteur Y</span>
-        <input class="form-input" type="number" id="domainY" value="5000" min="10"><span class="unit">m</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Cellules Nx</span>
-        <input class="form-input" type="number" id="gridNx" value="400" min="10" max="2000"><span class="unit">cel.</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Cellules Ny</span>
-        <input class="form-input" type="number" id="gridNy" value="100" min="5" max="500"><span class="unit">cel.</span>
-      </div>
-      <div style="font-size:0.6rem;color:var(--text-dim);margin-top:4px;" id="cellSizeInfo">dx=125m, dy=50m</div>
-    </div>
-
-    <div class="panel-section">
-      <div class="section-title">Résolution temporelle</div>
-      <div class="form-row">
-        <span class="form-label">Mode Δt</span>
-        <select class="form-input" id="dtMode">
-          <option value="auto">Automatique (CFL)</option>
-          <option value="fixed">Fixe</option>
-        </select>
-      </div>
-      <div class="form-row" id="cflRow">
-        <span class="form-label">CFL cible</span>
-        <input class="form-input" type="number" id="cflTarget" value="0.45" min="0.05" max="0.9" step="0.05">
-      </div>
-      <div class="form-row" id="dtFixedRow" style="display:none">
-        <span class="form-label">Δt fixe</span>
-        <input class="form-input" type="number" id="dtFixed" value="0.5" min="0.001" step="0.1"><span class="unit">s</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">T simulation</span>
-        <input class="form-input" type="number" id="tEnd" value="1800" min="1"><span class="unit">s</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">It./frame</span>
-        <input class="form-input" type="range" id="iterPerFrame" min="1" max="50" value="5">
-        <span class="stat-value" id="ipfVal" style="font-size:0.7rem">5</span>
-      </div>
-    </div>
-
-    <div class="panel-section">
-      <div class="section-title">Physique</div>
-      <div class="form-row">
-        <span class="form-label">g</span>
-        <input class="form-input" type="number" id="gravity" value="9.81" step="0.01"><span class="unit">m/s²</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Manning n</span>
-        <input class="form-input" type="number" id="manning" value="0.025" min="0" max="0.1" step="0.001">
-      </div>
-      <div class="form-row">
-        <span class="form-label">ρ eau</span>
-        <input class="form-input" type="number" id="rhoWater" value="1025" min="900"><span class="unit">kg/m³</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">h min actif</span>
-        <input class="form-input" type="number" id="hMin" value="0.01" min="0.001" step="0.001"><span class="unit">m</span>
-      </div>
-    </div>
-
-    <div class="panel-section">
-      <div class="section-title">Source Tsunami</div>
-      <div class="form-row">
-        <span class="form-label">Type source</span>
-        <select class="form-input" id="waveType">
-          <option value="solitary">Vague solitaire</option>
-          <option value="gaussian">Perturbation gaussienne</option>
-          <option value="seiche">Fond sismique (seiche)</option>
-          <option value="box">Créneau</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Amplitude A</span>
-        <input class="form-input" type="number" id="waveAmp" value="5" min="0.1" step="0.5"><span class="unit">m</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Position X₀</span>
-        <input class="form-input" type="number" id="waveX0" value="5000" min="0"><span class="unit">m</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Largeur σ</span>
-        <input class="form-input" type="number" id="waveSigma" value="3000" min="100" step="100"><span class="unit">m</span>
-      </div>
-    </div>
-
-    <div class="panel-section">
-      <div class="section-title">Conditions limites</div>
-      <div class="form-row">
-        <span class="form-label">CL gauche</span>
-        <select class="form-input" id="bcLeft">
-          <option value="wall">Mur (réfléx.)</option>
-          <option value="open">Ouverte</option>
-          <option value="absorb">Absorbante</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <span class="form-label">CL droite</span>
-        <select class="form-input" id="bcRight">
-          <option value="wall">Mur (réfléx.)</option>
-          <option value="open" selected>Ouverte</option>
-          <option value="absorb">Absorbante</option>
-        </select>
-      </div>
-    </div>
-
+<!-- LEFT -->
+<div class="panel L">
+  <div class="ps">
+    <div class="pst">Domaine physique</div>
+    <div class="fr"><span class="fl">Longueur Lx</span><input class="fi" type="number" id="pLx" value="50000" min="100"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Cellules Nx</span><input class="fi" type="number" id="pNx" value="500" min="20" max="2000"></div>
+    <div class="fr"><span class="fl">Hauteur Ly (viz)</span><input class="fi" type="number" id="pLy" value="5000" min="10"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Cellules Ny (viz)</span><input class="fi" type="number" id="pNy" value="120" min="10"></div>
+    <div class="ci" id="dxInfo">dx = 100.0 m</div>
   </div>
-
-  <!-- CENTER: Simulation Canvas -->
-  <div class="sim-area">
-    <div class="canvas-wrapper">
-      <canvas id="simCanvas"></canvas>
-      <div class="overlay-info">
-        <div class="time-display" id="timeDisplay">T = 0.00 s</div>
-        <div style="font-size:0.6rem;color:var(--text-dim);margin-top:4px;" id="overlayInfo2">Cliquer pour sonder | Roulette: zoom</div>
-        <div style="font-size:0.65rem;margin-top:4px;" id="probeInfo">—</div>
-      </div>
+  <div class="ps">
+    <div class="pst">Résolution temporelle</div>
+    <div class="fr"><span class="fl">Mode Δt</span>
+      <select class="fi" id="pDtMode">
+        <option value="auto">Auto (CFL)</option>
+        <option value="fixed">Fixe</option>
+      </select>
     </div>
-    <div class="bottom-bar">
-      <div class="controls-group">
-        <span style="font-size:0.6rem;color:var(--text-dim);">VIZ</span>
-        <button class="tool-btn active" id="vizWater" onclick="setViz('water')">EAU η</button>
-        <button class="tool-btn" id="vizSpeed" onclick="setViz('speed')">|V|</button>
-        <button class="tool-btn" id="vizFlux" onclick="setViz('flux')">FLUX Qx</button>
-        <button class="tool-btn" id="vizBath" onclick="setViz('bath')">FOND</button>
-      </div>
-      <div class="sep"></div>
-      <div class="colorbar" style="flex:1">
-        <span id="cbMin">0</span>
-        <div class="colorbar-gradient" id="colorbarGrad"></div>
-        <span id="cbMax">1</span>
-        <span style="color:var(--text-dim);font-size:0.6rem;" id="cbUnit">m</span>
-      </div>
-      <div class="sep"></div>
-      <div style="font-size:0.62rem;color:var(--text-dim);">
-        Accél. sim: <span style="color:var(--accent)" id="speedFactor">1.0×</span>
-      </div>
+    <div class="fr" id="rowCfl"><span class="fl">Nombre CFL</span><input class="fi" type="number" id="pCfl" value="0.45" min="0.05" max="0.9" step="0.05"></div>
+    <div class="fr" id="rowFix" style="display:none"><span class="fl">Δt fixe</span><input class="fi" type="number" id="pDtFix" value="1.0" min="0.001"><span class="unit">s</span></div>
+    <div class="fr"><span class="fl">Durée totale</span><input class="fi" type="number" id="pTend" value="1800"><span class="unit">s</span></div>
+    <div class="fr"><span class="fl">It./frame</span>
+      <input class="fi" type="range" id="pIpf" min="1" max="100" value="8">
+      <span class="hs-v" id="ipfL" style="font-size:.65rem;min-width:26px">8</span>
     </div>
   </div>
-
-  <!-- RIGHT PANEL: Bathymetry + Stats -->
-  <div class="panel right">
-    
-    <div class="panel-section">
-      <div class="section-title">Profil bathymétrique</div>
-      <div class="bath-tools">
-        <button class="tool-btn active" id="tBrush" onclick="setBathTool('brush')">✏ Dessiner</button>
-        <button class="tool-btn" id="tSmooth" onclick="setBathTool('smooth')">~ Lisser</button>
-        <button class="tool-btn" id="tFlat" onclick="setBathTool('flat')">▬ Plat</button>
-        <button class="tool-btn" onclick="applyPreset('coast')">🏖 Côte</button>
-        <button class="tool-btn" onclick="applyPreset('shelf')">📐 Plateau</button>
-        <button class="tool-btn" onclick="applyPreset('canyon')">〰 Canyon</button>
-        <button class="tool-btn" onclick="applyPreset('flat')">≡ Plat</button>
-        <button class="tool-btn" onclick="resetBath()">↺</button>
-      </div>
-      <div class="warn-banner" id="bathWarn">Éditer la bathymétrie puis cliquer INIT</div>
-      <div class="bath-canvas-wrapper">
-        <canvas id="bathCanvas"></canvas>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--text-dim);margin-top:4px;">
-        <span>←  Océan</span>
-        <span>Côte →</span>
-      </div>
-      <div class="form-row" style="margin-top:8px;">
-        <span class="form-label">Prof. océan</span>
-        <input class="form-input" type="number" id="depthOcean" value="4000" min="1"><span class="unit">m</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Haut. terre</span>
-        <input class="form-input" type="number" id="heightLand" value="20" min="0"><span class="unit">m</span>
-      </div>
-      <div class="form-row">
-        <span class="form-label">Position côte</span>
-        <input class="form-input" type="range" id="shorePos" min="10" max="90" value="70">
-        <span class="stat-value" id="shorePosVal" style="font-size:0.7rem;">70%</span>
-      </div>
+  <div class="ps">
+    <div class="pst">Physique</div>
+    <div class="fr"><span class="fl">g</span><input class="fi" type="number" id="pG" value="9.81" step="0.01"><span class="unit">m/s²</span></div>
+    <div class="fr"><span class="fl">Manning n</span><input class="fi" type="number" id="pManning" value="0.025" min="0" max="0.15" step="0.001"></div>
+    <div class="fr"><span class="fl">ρ eau</span><input class="fi" type="number" id="pRho" value="1025"><span class="unit">kg/m³</span></div>
+    <div class="fr"><span class="fl">h min wet</span><input class="fi" type="number" id="pHmin" value="0.01" min="0.001"><span class="unit">m</span></div>
+  </div>
+  <div class="ps">
+    <div class="pst">Source tsunami</div>
+    <div class="fr"><span class="fl">Type</span>
+      <select class="fi" id="pWtype">
+        <option value="solitary">Vague solitaire</option>
+        <option value="gaussian">Gaussienne</option>
+        <option value="seiche">Sismique (seiche)</option>
+        <option value="box">Créneau</option>
+        <option value="nwave">N-wave bipolaire</option>
+      </select>
     </div>
-
-    <div class="panel-section">
-      <div class="section-title">Statistiques temps réel</div>
-      <div class="mini-stats">
-        <div class="mini-stat">
-          <div class="mini-stat-val" id="statHmax">—</div>
-          <div class="mini-stat-lbl">η max (m)</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-val" id="statVmax">—</div>
-          <div class="mini-stat-lbl">|V| max (m/s)</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-val" id="statRunup">—</div>
-          <div class="mini-stat-lbl">Run-up (m)</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-val" id="statPenetration">—</div>
-          <div class="mini-stat-lbl">Pénétration (m)</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-val" id="statEnergy">—</div>
-          <div class="mini-stat-lbl">Énergie (GJ)</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-val" id="statMass">—</div>
-          <div class="mini-stat-lbl">Masse eau (Mt)</div>
-        </div>
-      </div>
+    <div class="fr"><span class="fl">Amplitude A</span><input class="fi" type="number" id="pAmp" value="5" min="0.01" step="0.5"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Position x₀</span><input class="fi" type="number" id="pX0" value="5000"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Largeur σ</span><input class="fi" type="number" id="pSigma" value="3000" min="10"><span class="unit">m</span></div>
+  </div>
+  <div class="ps">
+    <div class="pst">Conditions aux limites</div>
+    <div class="fr"><span class="fl">CL gauche</span>
+      <select class="fi" id="pBcL">
+        <option value="wall">Mur réfléchissant</option>
+        <option value="open">Ouverte</option>
+      </select>
     </div>
-
-    <div class="panel-section">
-      <div class="section-title">Profil de surface libre (coupe X)</div>
-      <canvas id="wavePlot"></canvas>
-      <div style="display:flex;justify-content:space-between;font-size:0.58rem;color:var(--text-dim);margin-top:2px;">
-        <span>0</span><span id="wavePlotXmax">—</span>
-      </div>
+    <div class="fr"><span class="fl">CL droite</span>
+      <select class="fi" id="pBcR">
+        <option value="wall">Mur réfléchissant</option>
+        <option value="open" selected>Ouverte</option>
+      </select>
     </div>
-
-    <div class="panel-section">
-      <div class="section-title">Jauge de run-up</div>
-      <canvas id="runupGauge" width="240" height="60" style="width:100%;height:60px;background:var(--bg);border:1px solid var(--border);"></canvas>
-    </div>
-
-    <div class="panel-section" style="flex:1">
-      <div class="section-title">Log simulation</div>
-      <div id="simLog" style="font-size:0.6rem;color:var(--text-dim);height:120px;overflow-y:auto;line-height:1.6;"></div>
-    </div>
-
   </div>
 </div>
 
+<!-- CENTER -->
+<div class="sim-area">
+  <div class="cw" id="cw">
+    <canvas id="sc"></canvas>
+    <div class="ov">
+      <div class="bt2" id="bigT">T = 0.00 s</div>
+      <div class="pt" id="prbTxt">Cliquez pour sonder un point</div>
+    </div>
+  </div>
+  <div class="bb">
+    <span style="font-size:.57rem;color:var(--dim);flex-shrink:0">VIZ :</span>
+    <button class="tb active" id="vbwater" onclick="setViz('water')">η surface</button>
+    <button class="tb" id="vbspeed" onclick="setViz('speed')">Vitesse |V|</button>
+    <button class="tb" id="vbflux" onclick="setViz('flux')">Débit Qx</button>
+    <button class="tb" id="vbbath" onclick="setViz('bath')">Fond</button>
+    <div class="sep"></div>
+    <div class="cbw">
+      <span class="cbl" id="cbMin">0</span>
+      <div class="cbg" id="cbG" style="background:linear-gradient(90deg,#020a14,#006994,#00b4d8,#caf0f8)"></div>
+      <span class="cbl" id="cbMax">1</span>
+      <span class="cbl" id="cbU">m</span>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="panel R">
+  <div class="ps">
+    <div class="pst">Éditeur bathymétrie</div>
+    <div class="btools">
+      <button class="bt3 active" id="btd" onclick="setBT('draw')">✏ Tracer</button>
+      <button class="bt3" id="bts" onclick="setBT('smooth')">≈ Lisser</button>
+      <button class="bt3" id="btr" onclick="setBT('raise')">▲ Monter</button>
+      <button class="bt3" id="btl" onclick="setBT('lower')">▼ Baisser</button>
+    </div>
+    <div class="btools">
+      <button class="bt3" onclick="applyP('coast')">🏖 Côte</button>
+      <button class="bt3" onclick="applyP('shelf')">📐 Plateau</button>
+      <button class="bt3" onclick="applyP('canyon')">〰 Canyon</button>
+      <button class="bt3" onclick="applyP('flat')">▬ Plat</button>
+      <button class="bt3" onclick="applyP('barrier')">⛰ Barrière</button>
+      <button class="bt3" onclick="resetB()" style="color:var(--red);border-color:var(--red)">↺</button>
+    </div>
+    <canvas id="bc"></canvas>
+    <div style="display:flex;justify-content:space-between;font-size:.56rem;color:var(--dim);margin-top:3px;"><span>← Océan (x=0)</span><span>Côte / Terre →</span></div>
+    <div class="fr" style="margin-top:7px;"><span class="fl">Prof. océan</span><input class="fi" type="number" id="pDep" value="4000" min="1" oninput="redrawB()"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Haut. terre max</span><input class="fi" type="number" id="pLH" value="30" min="0" oninput="redrawB()"><span class="unit">m</span></div>
+    <div class="fr">
+      <span class="fl">Position côte</span>
+      <input class="fi" type="range" id="pSh" min="10" max="90" value="70" oninput="updateSL();redrawB()">
+      <span class="hs-v" id="shL" style="font-size:.63rem;min-width:30px">70%</span>
+    </div>
+    <div style="font-size:.56rem;color:var(--dim);margin-top:2px;">⬆ Dessiner à la souris sur le canvas ci-dessus</div>
+  </div>
+
+  <div class="ps">
+    <div class="pst">Statistiques</div>
+    <div class="mg">
+      <div class="ms"><div class="msv" id="sHm">—</div><div class="msl">η max (m)</div></div>
+      <div class="ms"><div class="msv" id="sVm">—</div><div class="msl">|V| max (m/s)</div></div>
+      <div class="ms"><div class="msv" id="sRu">—</div><div class="msl">Run-up max (m)</div></div>
+      <div class="ms"><div class="msv" id="sPe">—</div><div class="msl">Pénétration (km)</div></div>
+      <div class="ms"><div class="msv" id="sEn">—</div><div class="msl">Énergie cin. (GJ)</div></div>
+      <div class="ms"><div class="msv" id="sMa">—</div><div class="msl">Masse eau (Gt)</div></div>
+    </div>
+  </div>
+
+  <div class="ps">
+    <div class="pst">Profil surface libre</div>
+    <canvas id="wp"></canvas>
+    <div style="display:flex;justify-content:space-between;font-size:.55rem;color:var(--dim);margin-top:2px;">
+      <span>0 m</span><span id="wpX">—</span>
+    </div>
+  </div>
+
+  <div class="ps">
+    <div class="pst">Run-up au cours du temps</div>
+    <canvas id="rg"></canvas>
+    <div style="font-size:.55rem;color:var(--dim);margin-top:2px;">Max: <span style="color:var(--accent3)" id="ruMax">—</span></div>
+  </div>
+
+  <div class="ps">
+    <div class="pst">Cas prédéfinis</div>
+    <button class="ex" onclick="loadEx('sumatra')"><strong>🌊 Tsunami Sumatra 2004</strong>Océan 4000m · vague solitaire A=10m · côte douce</button>
+    <button class="ex" onclick="loadEx('tohoku')"><strong>🗾 Tohoku 2011 (simplifié)</strong>N-wave bipolaire · plateau continental · A=12m</button>
+    <button class="ex" onclick="loadEx('lab')"><strong>🧪 Expérience de laboratoire</strong>Canal 500m · vague 0.2m · validation numérique</button>
+    <button class="ex" onclick="loadEx('harbor')"><strong>⚓ Amplification en port</strong>Canyon bathymétrique · résonances et réflexions</button>
+    <button class="ex" onclick="loadEx('landslide')"><strong>🪨 Glissement sous-marin</strong>Créneau localisé · deux fronts d'ondes opposés</button>
+  </div>
+
+  <div class="ps" style="flex:1">
+    <div class="pst">Journal</div>
+    <div class="lb" id="logB"></div>
+  </div>
+</div>
+</div>
+
 <script>
-// ============================================================
-//  TSUNAMI SIMULATOR — Shallow Water Equations (SWE) 1D+display
-//  Finite Volume, Godunov scheme, HLLE solver
-//  Supports wetting/drying, Manning friction, various BCs
-// ============================================================
+'use strict';
+const el=id=>document.getElementById(id);
+const pv=id=>parseFloat(el(id).value)||0;
+const pi=id=>parseInt(el(id).value)||0;
 
-const g = () => parseFloat(document.getElementById('gravity').value);
-const manning = () => parseFloat(document.getElementById('manning').value);
-const hMin = () => parseFloat(document.getElementById('hMin').value);
-const rhoW = () => parseFloat(document.getElementById('rhoWater').value);
-const tEnd = () => parseFloat(document.getElementById('tEnd').value);
-const cflTarget = () => parseFloat(document.getElementById('cflTarget').value);
-const dtFixed = () => parseFloat(document.getElementById('dtFixed').value);
-const dtMode = () => document.getElementById('dtMode').value;
-const iterPerFrame = () => parseInt(document.getElementById('iterPerFrame').value);
+// ── BATH ──────────────────────────────────────────────────────────────────────
+const NPT=512;
+let bPts=new Float32Array(NPT);
+let bTool='draw',bDown=false;
 
-let Nx, dx, Ly;
-let b; // bed elevation (positive up), dim [Nx]
-let h, qx; // water depth, discharge [Nx]
-let eta; // water surface elevation = h + b
-let simTime = 0;
-let running = false;
-let initialized = false;
-let animId = null;
-let lastFrameTime = 0;
-let iterCount = 0;
-let totalIter = 0;
-let currentDt = 0;
-let currentCfl = 0;
-let vizMode = 'water';
-let bathTool = 'brush';
-let bathProfile = null; // normalized 0..1 array of Nx
-let probeX = -1;
-let maxRunup = 0, maxRunupX = 0;
-let maxPenetration = 0;
-let penetrationHistory = [];
-let runupHistory = [];
-
-// Color maps
-function colorJet(t) {
-  t = Math.max(0,Math.min(1,t));
-  const r = Math.min(1, Math.max(0, 1.5 - Math.abs(4*t-3)));
-  const gv = Math.min(1, Math.max(0, 1.5 - Math.abs(4*t-2)));
-  const bv = Math.min(1, Math.max(0, 1.5 - Math.abs(4*t-1)));
-  return [r*255, gv*255, bv*255];
-}
-function colorWater(t) {
-  // deep blue to cyan to white
-  t = Math.max(0,Math.min(1,t));
-  if(t<0.33) { const s=t/0.33; return [s*0, s*50, 30+s*100]; }
-  if(t<0.66) { const s=(t-0.33)/0.33; return [s*0, 50+s*130, 130+s*100]; }
-  const s=(t-0.66)/0.34;
-  return [s*200, 180+s*75, 230+s*25];
+function n2e(n){
+  const d=pv('pDep'),lh=pv('pLH');
+  return n<=1?(n-1)*d:(n-1)*lh;
 }
 
-// ============================================================
-//  BATHYMETRY EDITOR
-// ============================================================
-const bathCanvas = document.getElementById('bathCanvas');
-const bathCtx = bathCanvas.getContext('2d');
-let bathDrawing = false;
-let bathNorm = null; // array of Npx values 0..1 (normalized height of bath)
-
-function initBathCanvas() {
-  bathCanvas.width = bathCanvas.offsetWidth || 240;
-  bathCanvas.height = 120;
-  if(!bathNorm || bathNorm.length !== bathCanvas.width) {
-    applyPreset('coast', true);
-  }
-  drawBathCanvas();
-}
-
-function applyPreset(preset, silent=false) {
-  const W = bathCanvas.width || 240;
-  bathNorm = new Float32Array(W);
-  const sp = parseInt(document.getElementById('shorePos').value)/100;
-  
-  if(preset==='coast') {
-    // Ocean left, gentle slope to shore, land right
-    for(let i=0;i<W;i++){
-      const x = i/W;
-      if(x < sp) {
-        // seabed: -depthOcean at left, rises to 0 at shore
-        const t = x/sp;
-        bathNorm[i] = t; // 0=deep, 1=shore level
-      } else {
-        // land: rises linearly
-        const t = (x-sp)/(1-sp);
-        bathNorm[i] = 1 + 0.2*t;
-      }
+function applyP(pr,silent){
+  const sp=pi('pSh')/100;
+  for(let i=0;i<NPT;i++){
+    const x=i/(NPT-1);let n=0;
+    if(pr==='coast'){
+      n=x<sp?x/sp:1+(x-sp)/Math.max(.001,1-sp);
+    }else if(pr==='shelf'){
+      if(x<.25)n=.04;
+      else if(x<sp){const t=(x-.25)/(sp-.25);n=.04+.96*t;}
+      else n=1+(x-sp)/(1-sp)*.8;
+    }else if(pr==='canyon'){
+      const base=x<sp?x/sp:1+(x-sp)/(1-sp)*.5;
+      const cyn=.4*Math.exp(-((x-.4)/.07)**2);
+      n=Math.max(0,base-cyn);
+    }else if(pr==='flat'){
+      n=.3;
+    }else if(pr==='barrier'){
+      n=x<sp?x/sp:1+(x-sp)/(1-sp)*.3;
+      if(Math.abs(x-(sp-.05))<.022)n=Math.max(n,1.12);
     }
-  } else if(preset==='shelf') {
-    for(let i=0;i<W;i++){
-      const x=i/W;
-      if(x<0.3) bathNorm[i]=0.05;
-      else if(x<sp) { const t=(x-0.3)/(sp-0.3); bathNorm[i]=0.05+0.95*t; }
-      else { const t=(x-sp)/(1-sp); bathNorm[i]=1+0.3*t; }
-    }
-  } else if(preset==='canyon') {
-    for(let i=0;i<W;i++){
-      const x=i/W;
-      const canyon = 0.4*Math.exp(-((x-0.4)/(0.08))**2);
-      const base = x<sp ? x/sp : 1+(x-sp)/(1-sp)*0.2;
-      bathNorm[i] = Math.max(0, base - canyon);
-    }
-  } else if(preset==='flat') {
-    for(let i=0;i<W;i++) bathNorm[i]=0.3;
+    bPts[i]=Math.max(0,Math.min(1.5,n));
   }
-  
-  if(!silent) {
-    document.getElementById('bathWarn').style.display='block';
-    drawBathCanvas();
+  if(!silent)redrawB();
+}
+function resetB(){applyP('coast');}
+function updateSL(){el('shL').textContent=el('pSh').value+'%';}
+
+const bCv=el('bc'),bCx=bCv.getContext('2d');
+function redrawB(){
+  bCv.width=bCv.offsetWidth||240;
+  bCv.height=108;
+  const W=bCv.width,H=bCv.height;
+  const d=pv('pDep'),lh=pv('pLH'),sp=pi('pSh')/100,tot=d+lh+1,zY=H*d/tot;
+  bCx.fillStyle='#020a14';bCx.fillRect(0,0,W,H);
+  bCx.beginPath();
+  for(let i=0;i<NPT;i++){
+    const px=i/(NPT-1)*W,py=zY-n2e(bPts[i])/tot*H;
+    i===0?bCx.moveTo(px,py):bCx.lineTo(px,py);
   }
+  bCx.lineTo(W,H);bCx.lineTo(0,H);bCx.closePath();
+  const gr=bCx.createLinearGradient(0,0,W,0);
+  gr.addColorStop(0,'rgba(0,25,65,.95)');
+  gr.addColorStop(sp,'rgba(170,130,55,.95)');
+  gr.addColorStop(1,'rgba(90,58,18,.95)');
+  bCx.fillStyle=gr;bCx.fill();
+  bCx.beginPath();
+  for(let i=0;i<NPT;i++){
+    const px=i/(NPT-1)*W,py=zY-n2e(bPts[i])/tot*H;
+    i===0?bCx.moveTo(px,py):bCx.lineTo(px,py);
+  }
+  bCx.strokeStyle='rgba(0,212,255,.88)';bCx.lineWidth=1.5;bCx.stroke();
+  bCx.beginPath();bCx.moveTo(0,zY);bCx.lineTo(W,zY);
+  bCx.strokeStyle='rgba(0,180,216,.3)';bCx.lineWidth=1;bCx.setLineDash([4,4]);bCx.stroke();bCx.setLineDash([]);
+  const shX=sp*W;
+  bCx.beginPath();bCx.moveTo(shX,0);bCx.lineTo(shX,H);
+  bCx.strokeStyle='rgba(255,107,53,.45)';bCx.lineWidth=1;bCx.setLineDash([3,3]);bCx.stroke();bCx.setLineDash([]);
+  bCx.font='9px JetBrains Mono';
+  bCx.fillStyle='rgba(0,212,255,.7)';bCx.fillText('η=0',3,zY-2);
+  bCx.fillStyle='rgba(200,160,80,.8)';bCx.fillText('+'+lh+'m',shX+3,11);
+  bCx.fillStyle='rgba(0,130,190,.7)';bCx.fillText('-'+d+'m',3,H-3);
 }
 
-function drawBathCanvas() {
-  const W = bathCanvas.width, H = bathCanvas.height;
-  bathCtx.clearRect(0,0,W,H);
-  
-  // background
-  bathCtx.fillStyle = '#030810';
-  bathCtx.fillRect(0,0,W,H);
-  
-  if(!bathNorm) return;
-  
-  const sp = parseInt(document.getElementById('shorePos').value)/100;
-  const depthOcean = parseFloat(document.getElementById('depthOcean').value);
-  const heightLand = parseFloat(document.getElementById('heightLand').value);
-  const totalRange = depthOcean + heightLand;
-  
-  // Shore line
-  const shoreX = sp * W;
-  
-  // Draw water and bed
-  bathCtx.beginPath();
-  bathCtx.moveTo(0, H);
-  for(let i=0;i<W;i++) {
-    // bathNorm: 0=ocean bottom, 1=shore level, >1=land
-    const norm = bathNorm[i];
-    // map to elevation: shore=0, ocean=-depthOcean, land=heightLand
-    let elev;
-    if(norm <= 1) elev = (norm - 1) * depthOcean; // negative in ocean
-    else elev = (norm - 1) * heightLand;
-    // pixel y: 0m = H*depthOcean/(depthOcean+heightLand)
-    const zeroY = H * depthOcean / totalRange;
-    const py = zeroY - elev * H / totalRange;
-    if(i===0) bathCtx.moveTo(0, py);
-    else bathCtx.lineTo(i, py);
+function bathEv(e){
+  const rect=bCv.getBoundingClientRect();
+  const xf=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  const yf=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
+  const tgt=(1-yf)*1.5;
+  const ci=Math.round(xf*(NPT-1));
+  const r=Math.max(4,Math.floor(NPT*.028));
+  for(let i=Math.max(0,ci-r);i<=Math.min(NPT-1,ci+r);i++){
+    const w=Math.max(0,1-Math.abs(i-ci)/r);
+    if(bTool==='draw')bPts[i]=bPts[i]*(1-w)+tgt*w;
+    else if(bTool==='smooth'&&i>0&&i<NPT-1)bPts[i]=.7*bPts[i]+.15*(bPts[i-1]+bPts[i+1]);
+    else if(bTool==='raise')bPts[i]+=.025*w;
+    else if(bTool==='lower')bPts[i]-=.025*w;
+    bPts[i]=Math.max(0,Math.min(1.5,bPts[i]));
   }
-  bathCtx.lineTo(W, H);
-  bathCtx.lineTo(0, H);
-  bathCtx.closePath();
-  
-  // gradient fill for bed
-  const grad = bathCtx.createLinearGradient(0,0,W,0);
-  grad.addColorStop(0,'rgba(0,40,80,0.9)');
-  grad.addColorStop(sp,'rgba(150,120,60,0.9)');
-  grad.addColorStop(1,'rgba(100,70,30,0.9)');
-  bathCtx.fillStyle = grad;
-  bathCtx.fill();
-  
-  // Outline
-  bathCtx.beginPath();
-  for(let i=0;i<W;i++) {
-    const norm = bathNorm[i];
-    let elev;
-    if(norm <= 1) elev = (norm - 1) * depthOcean;
-    else elev = (norm - 1) * heightLand;
-    const zeroY = H * depthOcean / totalRange;
-    const py = zeroY - elev * H / totalRange;
-    if(i===0) bathCtx.moveTo(0,py); else bathCtx.lineTo(i,py);
-  }
-  bathCtx.strokeStyle='var(--accent)';
-  bathCtx.lineWidth=1.5;
-  bathCtx.stroke();
-  
-  // Sea level line
-  const zeroY = H * depthOcean / totalRange;
-  bathCtx.beginPath();
-  bathCtx.moveTo(0,zeroY); bathCtx.lineTo(W,zeroY);
-  bathCtx.strokeStyle='rgba(0,180,216,0.5)';
-  bathCtx.lineWidth=1;
-  bathCtx.setLineDash([4,4]);
-  bathCtx.stroke();
-  bathCtx.setLineDash([]);
-  
-  // Labels
-  bathCtx.fillStyle='rgba(0,212,255,0.7)';
-  bathCtx.font='9px JetBrains Mono';
-  bathCtx.fillText('η=0', 4, zeroY-2);
-  bathCtx.fillStyle='rgba(201,169,110,0.8)';
-  bathCtx.fillText(`+${heightLand}m`, shoreX+4, 12);
-  bathCtx.fillStyle='rgba(0,100,148,0.8)';
-  bathCtx.fillText(`-${depthOcean}m`, 4, H-4);
+  redrawB();
+}
+bCv.addEventListener('mousedown',e=>{bDown=true;bathEv(e);});
+document.addEventListener('mouseup',()=>{bDown=false;});
+bCv.addEventListener('mousemove',e=>{if(bDown)bathEv(e);});
+bCv.addEventListener('touchstart',e=>{e.preventDefault();bDown=true;bathEv(e.touches[0]);},{passive:false});
+bCv.addEventListener('touchmove',e=>{e.preventDefault();if(bDown)bathEv(e.touches[0]);},{passive:false});
+bCv.addEventListener('touchend',()=>{bDown=false;});
+
+function setBT(t){
+  bTool=t;
+  [['d','draw'],['s','smooth'],['r','raise'],['l','lower']].forEach(([c,n])=>el('bt'+c).classList.toggle('active',n===t));
 }
 
-// Bath canvas interactions
-bathCanvas.addEventListener('mousedown', (e)=>{ bathDrawing=true; doBathDraw(e); });
-bathCanvas.addEventListener('mousemove', (e)=>{ if(bathDrawing) doBathDraw(e); });
-bathCanvas.addEventListener('mouseup', ()=>{ bathDrawing=false; document.getElementById('bathWarn').style.display='block'; });
-bathCanvas.addEventListener('mouseleave', ()=>{ bathDrawing=false; });
+// ── SIM STATE ─────────────────────────────────────────────────────────────────
+let Nx=0,dx=0;
+let bArr=null,hArr=null,qArr=null,etaArr=null;
+let simT=0,totIt=0,running=false,inited=false,animId=null;
+let curDt=0,curCfl=0,curIps=0,ipsC=0,ipsT=0,realStart=0;
+let maxEta=0,maxV=0,maxRunup=0,maxPenet=0,ruHist=[];
+let vizMode='water';
 
-function doBathDraw(e) {
-  if(!bathNorm) initBathCanvas();
-  const rect = bathCanvas.getBoundingClientRect();
-  const x = (e.clientX - rect.left) / rect.width;
-  const y = 1 - (e.clientY - rect.top) / rect.height;
-  
-  const W = bathNorm.length;
-  const ix = Math.round(x * W);
-  const sp = parseInt(document.getElementById('shorePos').value)/100;
-  
-  // Map y (0..1 from bottom) to bathNorm
-  const targetNorm = y * 1.3; // 0=ocean floor, 1=shore, 1.3=max land
-  
-  const brush = Math.max(2, Math.floor(W*0.03));
-  
-  for(let i=ix-brush;i<=ix+brush;i++){
-    if(i<0||i>=W) continue;
-    const dist = Math.abs(i-ix)/brush;
-    const weight = bathTool==='smooth' ? 0.2 : Math.max(0,1-dist);
-    if(bathTool==='flat') {
-      bathNorm[i] = targetNorm;
-    } else if(bathTool==='smooth') {
-      if(i>0&&i<W-1) bathNorm[i] = 0.8*bathNorm[i]+0.1*bathNorm[i-1]+0.1*bathNorm[i+1];
-    } else {
-      bathNorm[i] = bathNorm[i]*(1-weight) + targetNorm*weight;
-    }
-    bathNorm[i] = Math.max(0, Math.min(1.3, bathNorm[i]));
-  }
-  drawBathCanvas();
-}
-
-function resetBath() {
-  bathNorm = null;
-  applyPreset('coast');
-}
-
-// ============================================================
-//  SIMULATION CORE — 1D SWE with HLLE solver
-// ============================================================
-
-function buildBedProfile() {
-  const W = bathNorm ? bathNorm.length : 240;
-  const depthOcean = parseFloat(document.getElementById('depthOcean').value);
-  const heightLand = parseFloat(document.getElementById('heightLand').value);
-  const sp = parseInt(document.getElementById('shorePos').value)/100;
-  
-  b = new Float64Array(Nx);
+function buildBed(){
+  bArr=new Float64Array(Nx);
   for(let i=0;i<Nx;i++){
-    const x = i/(Nx-1);
-    // Interpolate from bathNorm
-    let norm;
-    if(bathNorm) {
-      const bx = x * (W-1);
-      const bi = Math.floor(bx);
-      const t = bx - bi;
-      const n0 = bathNorm[Math.min(bi, W-1)];
-      const n1 = bathNorm[Math.min(bi+1, W-1)];
-      norm = n0*(1-t) + n1*t;
-    } else {
-      norm = x<sp ? x/sp : 1+(x-sp)/(1-sp)*0.3;
+    const xf=i/(Nx-1),bi=Math.min(NPT-1,Math.floor(xf*(NPT-1)));
+    const t=xf*(NPT-1)-bi;
+    const n=bPts[bi]*(1-t)+bPts[Math.min(NPT-1,bi+1)]*t;
+    bArr[i]=n2e(n);
+  }
+}
+
+function initWave(){
+  hArr=new Float64Array(Nx);qArr=new Float64Array(Nx);etaArr=new Float64Array(Nx);
+  const gv=pv('pG'),A=pv('pAmp'),x0=pv('pX0'),sig=pv('pSigma'),wt=el('pWtype').value;
+  for(let i=0;i<Nx;i++){
+    const xi=i*dx;
+    hArr[i]=Math.max(0,-bArr[i]);
+    if(bArr[i]>=0)continue;
+    const depth=-bArr[i];
+    let de=0,dq=0;
+    if(wt==='solitary'){
+      const k=Math.sqrt(3*A)/(2*depth*Math.sqrt(depth));
+      de=A/Math.cosh(k*(xi-x0))**2;
+      dq=de*Math.sqrt(gv*(depth+de));
+    }else if(wt==='gaussian'){
+      de=A*Math.exp(-.5*((xi-x0)/sig)**2);
+    }else if(wt==='seiche'){
+      de=A*Math.exp(-.5*((xi-x0)/sig)**2);
+      dq=A*Math.sqrt(gv*depth)*Math.exp(-.5*((xi-x0)/sig)**2);
+    }else if(wt==='box'){
+      de=Math.abs(xi-x0)<sig/2?A:0;
+    }else if(wt==='nwave'){
+      const kk=1/(sig*.6);
+      de=A*(xi-x0)*kk*Math.exp(-.5*(kk*(xi-x0))**2);
     }
-    // Convert norm to elevation
-    if(norm <= 1) b[i] = (norm-1)*depthOcean;
-    else b[i] = (norm-1)*heightLand;
+    hArr[i]+=de;if(hArr[i]<0)hArr[i]=0;
+    qArr[i]+=dq;
   }
+  updEta();
+}
+function updEta(){for(let i=0;i<Nx;i++)etaArr[i]=hArr[i]+bArr[i];}
+
+function hllFlux(hL,qL,hR,qR,gv){
+  const eps=1e-10;
+  const uL=hL>eps?qL/hL:0,uR=hR>eps?qR/hR:0;
+  const cL=Math.sqrt(gv*Math.max(0,hL)),cR=Math.sqrt(gv*Math.max(0,hR));
+  const hS=.5*(hL+hR),uS=.5*(uL+uR),cS=Math.sqrt(gv*Math.max(0,hS));
+  const sL=Math.min(uL-cL,uS-cS),sR=Math.max(uR+cR,uS+cS);
+  if(sL>=0)return[qL,uL*qL+.5*gv*hL*hL];
+  if(sR<=0)return[qR,uR*qR+.5*gv*hR*hR];
+  const ds=sR-sL;
+  return[(sR*qL-sL*qR+sL*sR*(hR-hL))/ds,
+         (sR*(uL*qL+.5*gv*hL*hL)-sL*(uR*qR+.5*gv*hR*hR)+sL*sR*(qR-qL))/ds];
 }
 
-function initWave() {
-  // Initialize water surface with quiescent ocean
-  h = new Float64Array(Nx);
-  qx = new Float64Array(Nx);
-  
-  const wtype = document.getElementById('waveType').value;
-  const amp = parseFloat(document.getElementById('waveAmp').value);
-  const x0 = parseFloat(document.getElementById('waveX0').value);
-  const sigma = parseFloat(document.getElementById('waveSigma').value);
-  const Lx = parseFloat(document.getElementById('domainX').value);
-  
+function computeDt(){
+  if(el('pDtMode').value==='fixed'){curCfl=0;return pv('pDtFix');}
+  const gv=pv('pG'),hm=pv('pHmin');let ms=1e-8;
   for(let i=0;i<Nx;i++){
-    const xi = i*dx;
-    // Base: sea level at 0, so h = max(0, -b)
-    h[i] = Math.max(0, -b[i]);
-    
-    // Add wave perturbation where ocean is deep enough
-    if(b[i]<0) {
-      let deta = 0;
-      if(wtype==='solitary') {
-        // Solitary wave shape: sech²
-        const d = Math.max(1, -b[i]);
-        const k = Math.sqrt(3*amp/(4*d*d*d));
-        deta = amp / Math.cosh(k*(xi-x0))**2;
-      } else if(wtype==='gaussian') {
-        deta = amp * Math.exp(-0.5*((xi-x0)/sigma)**2);
-      } else if(wtype==='seiche') {
-        // Initial displacement + velocity matching seismic uplift
-        deta = amp * Math.exp(-0.5*((xi-x0)/sigma)**2);
-        const d = Math.max(1, -b[i]);
-        qx[i] = amp * Math.sqrt(g()*d) * Math.exp(-0.5*((xi-x0)/sigma)**2) * 0.5;
-      } else if(wtype==='box') {
-        deta = (Math.abs(xi-x0) < sigma/2) ? amp : 0;
-      }
-      h[i] += deta;
-      if(h[i]<0) h[i]=0;
-    }
+    if(hArr[i]<hm)continue;
+    const s=Math.abs(qArr[i]/hArr[i])+Math.sqrt(gv*hArr[i]);
+    if(s>ms)ms=s;
   }
-  
-  computeEta();
-  log(`✓ Vague initialisée: type=${wtype}, A=${amp}m, x₀=${x0}m`);
+  const dt=pv('pCfl')*dx/ms;curCfl=ms*dt/dx;return Math.min(dt,10);
 }
 
-function computeEta() {
-  eta = new Float64Array(Nx);
-  for(let i=0;i<Nx;i++) eta[i] = h[i] + b[i];
+function step(dt){
+  const gv=pv('pG'),mn=pv('pManning'),hm=pv('pHmin'),N=Nx;
+  const fh=new Float64Array(N+1),fq=new Float64Array(N+1);
+  for(let i=1;i<N;i++){
+    const[a,b]=hllFlux(hArr[i-1],qArr[i-1],hArr[i],qArr[i],gv);
+    fh[i]=a;fq[i]=b;
+  }
+  const bL=el('pBcL').value,bR=el('pBcR').value;
+  if(bL==='wall'){fh[0]=0;fq[0]=.5*gv*hArr[0]*hArr[0];}
+  else{fh[0]=qArr[0];fq[0]=(hArr[0]>hm?qArr[0]*qArr[0]/hArr[0]:0)+.5*gv*hArr[0]*hArr[0];}
+  if(bR==='wall'){fh[N]=0;fq[N]=.5*gv*hArr[N-1]*hArr[N-1];}
+  else{fh[N]=qArr[N-1];fq[N]=(hArr[N-1]>hm?qArr[N-1]*qArr[N-1]/hArr[N-1]:0)+.5*gv*hArr[N-1]*hArr[N-1];}
+  const dtdx=dt/dx,hn=new Float64Array(N),qn=new Float64Array(N);
+  for(let i=0;i<N;i++){
+    hn[i]=hArr[i]-dtdx*(fh[i+1]-fh[i]);
+    if(hn[i]<0)hn[i]=0;
+    let Sb=0;
+    if(i>0&&i<N-1)Sb=-gv*hn[i]*(bArr[i+1]-bArr[i-1])/(2*dx);
+    else if(i===0)Sb=-gv*hn[i]*(bArr[1]-bArr[0])/dx;
+    else Sb=-gv*hn[i]*(bArr[N-1]-bArr[N-2])/dx;
+    let qs=qArr[i]-dtdx*(fq[i+1]-fq[i])+dt*Sb;
+    if(hn[i]>hm&&mn>0){const u=qs/hn[i];const Cf=gv*mn*mn/Math.pow(hn[i],1/3);qs/=(1+dt*Cf*Math.abs(u)/hn[i]);}
+    if(hn[i]<hm){hn[i]=0;qs=0;}
+    qn[i]=qs;
+  }
+  hArr=hn;qArr=qn;updEta();
 }
 
-// HLLE Riemann solver for SWE
-function hllFlux(hL,qL,hR,qR, gv) {
-  const hm = 0.5*(hL+hR);
-  const um = hm>1e-12 ? 0.5*(qL/Math.max(hL,1e-12)+qR/Math.max(hR,1e-12)) : 0;
-  const cm = Math.sqrt(gv*Math.max(hm,0));
-  
-  const cL = Math.sqrt(gv*Math.max(hL,0));
-  const cR = Math.sqrt(gv*Math.max(hR,0));
-  const uL = hL>1e-12 ? qL/hL : 0;
-  const uR = hR>1e-12 ? qR/hR : 0;
-  
-  const sL = Math.min(uL-cL, um-cm);
-  const sR = Math.max(uR+cR, um+cm);
-  
-  if(sL>=0) {
-    return [qL, uL*qL + 0.5*gv*hL*hL];
-  }
-  if(sR<=0) {
-    return [qR, uR*qR + 0.5*gv*hR*hR];
-  }
-  
-  const fhL = qL, fhR = qR;
-  const fqL = uL*qL + 0.5*gv*hL*hL;
-  const fqR = uR*qR + 0.5*gv*hR*hR;
-  
-  const denom = sR - sL;
-  const fh = (sR*fhL - sL*fhR + sL*sR*(hR-hL)) / denom;
-  const fq = (sR*fqL - sL*fqR + sL*sR*(qR-qL)) / denom;
-  return [fh, fq];
-}
-
-function computeDt() {
-  if(dtMode()==='fixed') return dtFixed();
-  const gv = g();
-  let maxSpeed = 0;
+function compStats(){
+  const hm=pv('pHmin'),gv=pv('pG'),rho=pv('pRho');
+  let hmax=0,vmax=0,ke=0,mass=0;
+  const sp=pi('pSh')/100,si=Math.floor(sp*Nx);
   for(let i=0;i<Nx;i++){
-    if(h[i]<hMin()) continue;
-    const u = qx[i]/h[i];
-    const c = Math.sqrt(gv*h[i]);
-    maxSpeed = Math.max(maxSpeed, Math.abs(u)+c);
+    const h=hArr[i],q=qArr[i],eta=etaArr[i];
+    if(eta>hmax)hmax=eta;
+    const v=h>hm?Math.abs(q/h):0;
+    if(v>vmax)vmax=v;
+    ke+=.5*rho*h*v*v*dx;mass+=rho*h*dx;
   }
-  if(maxSpeed<1e-10) return 1.0;
-  const dt = cflTarget()*dx/maxSpeed;
-  currentCfl = maxSpeed*dt/dx;
-  return Math.min(dt, 5.0);
+  let runup=0,penet=0;
+  for(let i=Nx-1;i>=si;i--){if(hArr[i]>hm){penet=(i-si)*dx;runup=etaArr[i];break;}}
+  if(runup>maxRunup)maxRunup=runup;
+  if(penet>maxPenet)maxPenet=penet;
+  if(hmax>maxEta)maxEta=hmax;
+  if(vmax>maxV)maxV=vmax;
+  return{hmax,vmax,ke,mass,runup,penet};
 }
 
-function step(dt) {
-  const gv = g();
-  const mn = manning();
-  const hm = hMin();
-  
-  const fh = new Float64Array(Nx+1);
-  const fq = new Float64Array(Nx+1);
-  
-  // Internal fluxes
-  for(let i=1;i<Nx;i++){
-    const hL = h[i-1], hR = h[i];
-    const qL = qx[i-1], qR = qx[i];
-    const [fhi,fqi] = hllFlux(hL,qL,hR,qR,gv);
-    fh[i]=fhi; fq[i]=fqi;
-  }
-  
-  // Boundary conditions
-  const bcLeft = document.getElementById('bcLeft').value;
-  const bcRight = document.getElementById('bcRight').value;
-  
-  // Left BC
-  if(bcLeft==='wall') { fh[0]=0; fq[0]=0.5*gv*h[0]*h[0]; }
-  else if(bcLeft==='open'||bcLeft==='absorb') { fh[0]=qx[0]; fq[0]=qx[0]*qx[0]/Math.max(h[0],hm)+0.5*gv*h[0]*h[0]; }
-  // Right BC
-  if(bcRight==='wall') { fh[Nx]=0; fq[Nx]=0.5*gv*h[Nx-1]*h[Nx-1]; }
-  else if(bcRight==='open'||bcRight==='absorb') { fh[Nx]=qx[Nx-1]; fq[Nx]=qx[Nx-1]*qx[Nx-1]/Math.max(h[Nx-1],hm)+0.5*gv*h[Nx-1]*h[Nx-1]; }
-  
-  // Source terms & update
-  const dtdx = dt/dx;
-  const hNew = new Float64Array(Nx);
-  const qNew = new Float64Array(Nx);
-  
+// ── RENDER ────────────────────────────────────────────────────────────────────
+const sc=el('sc'),scx=sc.getContext('2d');
+function resizeSC(){const pw=el('cw').clientWidth,ph=el('cw').clientHeight;if(pw>0&&ph>0){sc.width=pw;sc.height=ph;}}
+
+function colorW(t){
+  t=Math.max(0,Math.min(1,t));
+  if(t<.33){const s=t/.33;return[0,Math.round(s*48),Math.round(28+s*100)];}
+  if(t<.66){const s=(t-.33)/.33;return[0,Math.round(48+s*128),Math.round(128+s*102)];}
+  const s=(t-.66)/.34;return[Math.round(s*215),Math.round(176+s*79),Math.round(230+s*25)];
+}
+
+function render(){
+  if(!inited){renderE();return;}
+  const W=sc.width,H=sc.height,d=pv('pDep'),lh=pv('pLH'),tot=d+lh+2,hm=pv('pHmin');
+  const yE=e=>H-(e+d)/tot*H;
+  let mn=1e18,mx=-1e18;
   for(let i=0;i<Nx;i++){
-    hNew[i] = h[i] - dtdx*(fh[i+1]-fh[i]);
-    if(hNew[i]<0) hNew[i]=0;
-    
-    // Bed slope source (hydrostatic reconstruction)
-    let Sb = 0;
-    if(i>0&&i<Nx-1) Sb = -gv*hNew[i]*(b[i+1]-b[i-1])/(2*dx);
-    else if(i===0) Sb = -gv*hNew[i]*(b[1]-b[0])/dx;
-    else Sb = -gv*hNew[i]*(b[Nx-1]-b[Nx-2])/dx;
-    
-    // Friction (implicit)
-    let qStar = qx[i] - dtdx*(fq[i+1]-fq[i]) + dt*Sb;
-    if(hNew[i]>hm && mn>0) {
-      const u = qStar/hNew[i];
-      const Cf = gv*mn*mn/Math.pow(hNew[i],1/3);
-      const denom = 1 + dt*Cf*Math.abs(u)/hNew[i];
-      qStar /= denom;
-    }
-    
-    // Wetting/drying: no flow into dry land uphill
-    if(hNew[i]<hm) { hNew[i]=0; qStar=0; }
-    
-    qNew[i] = qStar;
+    const v=vizMode==='water'?etaArr[i]:vizMode==='speed'?(hArr[i]>hm?Math.abs(qArr[i]/hArr[i]):0):vizMode==='flux'?qArr[i]:bArr[i];
+    if(v<mn)mn=v;if(v>mx)mx=v;
   }
-  
-  h = hNew; qx = qNew;
-  computeEta();
-}
-
-function computeStats() {
-  let hmax=0, vmax=0, energy=0, mass=0;
-  const gv=g();
-  for(let i=0;i<Nx;i++){
-    if(h[i]>hMax) hmax=h[i];
-    const v = h[i]>hMin()?Math.abs(qx[i]/h[i]):0;
-    if(v>vmax) vmax=v;
-    energy += 0.5*rhoW()*(gv*h[i]*h[i] + h[i]*v*v)*dx;
-    mass += h[i]*dx;
-  }
-  
-  // Run-up: find furthest wet cell on land (b>0)
-  const sp = parseInt(document.getElementById('shorePos').value)/100;
-  const shoreIdx = Math.floor(sp*Nx);
-  let penetration = 0, runup = 0;
-  for(let i=Nx-1;i>=shoreIdx;i--){
-    if(h[i]>hMin()) {
-      penetration = (i-shoreIdx)*dx;
-      runup = eta[i];
-      break;
-    }
-  }
-  maxRunup = Math.max(maxRunup, runup);
-  maxPenetration = Math.max(maxPenetration, penetration);
-  
-  return { hmax, vmax, energy, mass, runup, penetration };
-}
-
-let hMax=0;
-
-// ============================================================
-//  RENDERING
-// ============================================================
-const simCanvas = document.getElementById('simCanvas');
-const simCtx = simCanvas.getContext('2d');
-
-function resizeCanvas() {
-  const wrapper = simCanvas.parentElement;
-  simCanvas.width = wrapper.clientWidth;
-  simCanvas.height = wrapper.clientHeight;
-}
-
-function render() {
-  if(!initialized) { renderEmpty(); return; }
-  
-  const W = simCanvas.width, H = simCanvas.height;
-  const imageData = simCtx.createImageData(W, H);
-  const data = imageData.data;
-  
-  const depthOcean = parseFloat(document.getElementById('depthOcean').value);
-  const heightLand = parseFloat(document.getElementById('heightLand').value);
-  
-  // Compute display ranges
-  let minVal=Infinity, maxVal=-Infinity;
-  for(let i=0;i<Nx;i++){
-    let v;
-    if(vizMode==='water') v = eta[i];
-    else if(vizMode==='speed') v = h[i]>hMin() ? Math.abs(qx[i]/h[i]) : 0;
-    else if(vizMode==='flux') v = qx[i];
-    else v = b[i];
-    if(v<minVal) minVal=v;
-    if(v>maxVal) maxVal=v;
-  }
-  if(maxVal-minVal<0.01) maxVal=minVal+0.01;
-  
-  // Update colorbar
-  document.getElementById('cbMin').textContent = minVal.toFixed(1);
-  document.getElementById('cbMax').textContent = maxVal.toFixed(1);
-  
-  // The sea level in pixel Y
-  const seaLevelFrac = depthOcean / (depthOcean+heightLand+10);
-  
+  if(mx-mn<.001)mx=mn+.001;
+  el('cbMin').textContent=mn.toFixed(1);el('cbMax').textContent=mx.toFixed(1);
+  const img=scx.createImageData(W,H),data=img.data;
   for(let px=0;px<W;px++){
-    const ci = Math.min(Nx-1, Math.floor(px/W*Nx));
-    const bi_v = b[ci];
-    const hi_v = h[ci];
-    const etai = eta[ci];
-    
-    // Map elevations to pixel Y
-    const totalH = depthOcean + heightLand + 5;
-    const yOfElev = (elev) => {
-      return H - (elev + depthOcean) / totalH * H;
-    };
-    
-    const yBed = Math.min(H, Math.max(0, yOfElev(bi_v)));
-    const yWater = hi_v > hMin() ? Math.min(H, Math.max(0, yOfElev(etai))) : yBed;
-    const ySea = yOfElev(0);
-    
-    let val = 0;
-    if(vizMode==='water') val = etai;
-    else if(vizMode==='speed') val = hi_v>hMin()?Math.abs(qx[ci]/hi_v):0;
-    else if(vizMode==='flux') val = qx[ci];
-    else val = bi_v;
-    
-    const t = (val-minVal)/(maxVal-minVal);
-    
+    const ci=Math.min(Nx-1,Math.floor(px/W*Nx));
+    const bi=bArr[ci],hi=hArr[ci],qi=qArr[ci],ei=etaArr[ci];
+    const yBed=Math.min(H,Math.max(0,yE(bi)));
+    const ySurf=hi>hm?Math.min(H,Math.max(0,yE(ei))):yBed;
+    const vv=vizMode==='water'?ei:vizMode==='speed'?(hi>hm?Math.abs(qi/hi):0):vizMode==='flux'?qi:bi;
+    const tv=Math.max(0,Math.min(1,(vv-mn)/(mx-mn)));
+    const[cr,cg,cb]=colorW(tv);
     for(let py=0;py<H;py++){
-      const idx = (py*W+px)*4;
-      
-      if(py >= yBed) {
-        // Bed/land
-        if(bi_v < 0) {
-          // Seabed — dark sandy
-          data[idx]=40; data[idx+1]=30; data[idx+2]=15; data[idx+3]=255;
-        } else {
-          // Land — brown/green gradient
-          const lt = Math.min(1,(bi_v)/(heightLand+1));
-          data[idx]=Math.floor(80+lt*80); data[idx+1]=Math.floor(50+lt*70); data[idx+2]=20; data[idx+3]=255;
-        }
-      } else if(hi_v>hMin() && py>=yWater && py<yBed) {
-        // Water column
-        const depth = (py-yWater)/(yBed-yWater+1);
-        let [r,gv,bv] = colorWater(t);
-        // Darken with depth
-        const df = 1 - depth*0.6;
-        data[idx]=r*df; data[idx+1]=gv*df; data[idx+2]=bv*df; data[idx+3]=255;
-        // Surface shimmer at yWater
-        if(py===Math.floor(yWater)) {
-          data[idx]=200; data[idx+1]=230; data[idx+2]=255; data[idx+3]=255;
-        }
-      } else {
-        // Air / above everything
-        // Sky gradient
-        const skyT = py/H;
-        data[idx]=Math.floor(3+skyT*12);
-        data[idx+1]=Math.floor(8+skyT*25);
-        data[idx+2]=Math.floor(20+skyT*55);
+      const idx=(py*W+px)*4;
+      if(py>=yBed){
+        if(bi<0){data[idx]=38;data[idx+1]=26;data[idx+2]=11;}
+        else{const lt=Math.min(1,bi/(lh+1));data[idx]=Math.round(78+lt*58);data[idx+1]=Math.round(52+lt*48);data[idx+2]=14;}
+        data[idx+3]=255;
+      }else if(hi>hm&&py>=ySurf&&py<yBed){
+        const dep=(py-ySurf)/(Math.max(1,yBed-ySurf)),df=1-dep*.55;
+        data[idx]=Math.round(cr*df);data[idx+1]=Math.round(cg*df);data[idx+2]=Math.round(cb*df);
+        if(py===Math.floor(ySurf)){data[idx]=215;data[idx+1]=238;data[idx+2]=255;}
+        data[idx+3]=255;
+      }else{
+        const st=py/H;
+        data[idx]=Math.round(2+st*9);data[idx+1]=Math.round(5+st*18);data[idx+2]=Math.round(14+st*42);
         data[idx+3]=255;
       }
     }
   }
-  
-  simCtx.putImageData(imageData, 0, 0);
-  
-  // Draw probe line
-  if(probeX>=0) {
-    const px = probeX/parseFloat(document.getElementById('domainX').value)*W;
-    simCtx.beginPath();
-    simCtx.moveTo(px,0); simCtx.lineTo(px,H);
-    simCtx.strokeStyle='rgba(255,255,255,0.4)';
-    simCtx.lineWidth=1;
-    simCtx.stroke();
-  }
-  
-  // Draw shore line
-  const sp = parseInt(document.getElementById('shorePos').value)/100;
-  const spx = sp*W;
-  simCtx.beginPath();
-  simCtx.moveTo(spx,0); simCtx.lineTo(spx,H);
-  simCtx.strokeStyle='rgba(255,107,53,0.6)';
-  simCtx.lineWidth=1;
-  simCtx.setLineDash([4,4]);
-  simCtx.stroke();
-  simCtx.setLineDash([]);
-  
-  // Label
-  simCtx.fillStyle='rgba(255,107,53,0.8)';
-  simCtx.font='10px JetBrains Mono';
-  simCtx.fillText('CÔTE', spx+3, 14);
+  scx.putImageData(img,0,0);
+  const sp=pi('pSh')/100,shx=sp*W;
+  scx.beginPath();scx.moveTo(shx,0);scx.lineTo(shx,H);
+  scx.strokeStyle='rgba(255,107,53,.6)';scx.lineWidth=1.5;scx.setLineDash([5,4]);scx.stroke();scx.setLineDash([]);
+  scx.fillStyle='rgba(255,107,53,.85)';scx.font='10px JetBrains Mono';scx.fillText('CÔTE',shx+4,13);
+}
+function renderE(){
+  const W=sc.width,H=sc.height;
+  scx.fillStyle='#020a14';scx.fillRect(0,0,W,H);
+  scx.fillStyle='rgba(0,212,255,.22)';scx.font='bold 20px Bebas Neue';scx.textAlign='center';
+  scx.fillText('APPUYER SUR  INIT  POUR DÉMARRER',W/2,H/2-10);
+  scx.font='12px JetBrains Mono';scx.fillStyle='rgba(0,212,255,.12)';
+  scx.fillText('Configurer la bathymétrie  →  INIT  →  ▶ RUN',W/2,H/2+16);
+  scx.textAlign='left';
 }
 
-function renderEmpty() {
-  const W = simCanvas.width, H = simCanvas.height;
-  simCtx.fillStyle='#030810';
-  simCtx.fillRect(0,0,W,H);
-  simCtx.fillStyle='rgba(0,212,255,0.2)';
-  simCtx.font='bold 20px Bebas Neue';
-  simCtx.textAlign='center';
-  simCtx.fillText('CLIQUER SUR INIT POUR DÉMARRER', W/2, H/2);
-  simCtx.textAlign='left';
-}
-
-// Wave plot (free surface profile)
-const wavePlot = document.getElementById('wavePlot');
-const wavePlotCtx = wavePlot.getContext('2d');
-
-function renderWavePlot() {
-  if(!initialized) return;
-  const W = wavePlot.offsetWidth || 240;
-  const H = 80;
-  wavePlot.width = W; wavePlot.height = H;
-  wavePlotCtx.clearRect(0,0,W,H);
-  wavePlotCtx.fillStyle='#030810';
-  wavePlotCtx.fillRect(0,0,W,H);
-  
-  const depthOcean = parseFloat(document.getElementById('depthOcean').value);
-  const heightLand = parseFloat(document.getElementById('heightLand').value);
-  const totalH = depthOcean+heightLand+2;
-  
-  // Sea level line
-  const seaY = H - (depthOcean/totalH)*H;
-  wavePlotCtx.beginPath();
-  wavePlotCtx.moveTo(0,seaY); wavePlotCtx.lineTo(W,seaY);
-  wavePlotCtx.strokeStyle='rgba(0,180,216,0.3)';
-  wavePlotCtx.lineWidth=1;
-  wavePlotCtx.setLineDash([3,3]);
-  wavePlotCtx.stroke();
-  wavePlotCtx.setLineDash([]);
-  
-  // Bed
-  wavePlotCtx.beginPath();
+const wpCv=el('wp'),wpCx=wpCv.getContext('2d');
+function renderWP(){
+  wpCv.width=wpCv.offsetWidth||240;wpCv.height=72;
+  const W=wpCv.width,H=wpCv.height,d=pv('pDep'),lh=pv('pLH'),tot=d+lh+2;
+  wpCx.fillStyle='#020a14';wpCx.fillRect(0,0,W,H);
+  if(!inited)return;
+  const zY=H*d/tot;
+  wpCx.beginPath();wpCx.moveTo(0,zY);wpCx.lineTo(W,zY);
+  wpCx.strokeStyle='rgba(0,180,216,.22)';wpCx.lineWidth=1;wpCx.setLineDash([3,3]);wpCx.stroke();wpCx.setLineDash([]);
+  wpCx.beginPath();
+  for(let i=0;i<Nx;i++){const px=i/Nx*W,py=H-(bArr[i]+d)/tot*H;i===0?wpCx.moveTo(px,py):wpCx.lineTo(px,py);}
+  wpCx.strokeStyle='rgba(170,115,28,.45)';wpCx.lineWidth=1;wpCx.stroke();
+  wpCx.beginPath();let first=true;
   for(let i=0;i<Nx;i++){
-    const px=i/Nx*W;
-    const py=H-(b[i]+depthOcean)/totalH*H;
-    if(i===0) wavePlotCtx.moveTo(px,py); else wavePlotCtx.lineTo(px,py);
+    if(hArr[i]>pv('pHmin')){
+      const px=i/Nx*W,py=H-(etaArr[i]+d)/tot*H;
+      first?wpCx.moveTo(px,py):wpCx.lineTo(px,py);first=false;
+    }else first=true;
   }
-  wavePlotCtx.strokeStyle='rgba(150,100,30,0.6)';
-  wavePlotCtx.lineWidth=1;
-  wavePlotCtx.stroke();
-  
-  // Water surface
-  wavePlotCtx.beginPath();
-  let first=true;
-  for(let i=0;i<Nx;i++){
-    if(h[i]>hMin()){
-      const px=i/Nx*W;
-      const py=H-(eta[i]+depthOcean)/totalH*H;
-      if(first){wavePlotCtx.moveTo(px,py);first=false;}
-      else wavePlotCtx.lineTo(px,py);
-    } else first=true;
-  }
-  wavePlotCtx.strokeStyle='rgba(0,212,255,0.9)';
-  wavePlotCtx.lineWidth=1.5;
-  wavePlotCtx.stroke();
-  
-  document.getElementById('wavePlotXmax').textContent = parseFloat(document.getElementById('domainX').value).toFixed(0)+'m';
+  wpCx.strokeStyle='rgba(0,212,255,.92)';wpCx.lineWidth=1.5;wpCx.stroke();
+  el('wpX').textContent=pv('pLx').toFixed(0)+'m';
 }
 
-// Runup gauge
-const runupGauge = document.getElementById('runupGauge');
-const ruCtx = runupGauge.getContext('2d');
-const runupHistory2 = [];
-
-function renderRunupGauge() {
-  const W=runupGauge.width=runupGauge.offsetWidth||240, H=60;
-  runupGauge.height=H;
-  ruCtx.fillStyle='#030810';
-  ruCtx.fillRect(0,0,W,H);
-  if(runupHistory2.length<2) return;
-  const maxR = Math.max(1,...runupHistory2)*1.2;
-  ruCtx.beginPath();
-  runupHistory2.forEach((v,i)=>{
-    const px=i/(runupHistory2.length-1)*W;
-    const py=H-v/maxR*(H-10)-5;
-    if(i===0)ruCtx.moveTo(px,py);else ruCtx.lineTo(px,py);
-  });
-  ruCtx.strokeStyle='var(--accent3)';
-  ruCtx.lineWidth=2;
-  ruCtx.stroke();
-  ruCtx.fillStyle='rgba(0,255,157,0.3)';
-  ruCtx.lineTo(W,H);ruCtx.lineTo(0,H);
-  ruCtx.fill();
-  
-  ruCtx.fillStyle='var(--accent3)';
-  ruCtx.font='10px JetBrains Mono';
-  ruCtx.fillText(`max: ${maxRunup.toFixed(2)}m`, 4,12);
+const rgCv=el('rg'),rgCx=rgCv.getContext('2d');
+function renderRG(){
+  rgCv.width=rgCv.offsetWidth||240;rgCv.height=52;
+  const W=rgCv.width,H=rgCv.height;
+  rgCx.fillStyle='#020a14';rgCx.fillRect(0,0,W,H);
+  if(ruHist.length<2)return;
+  const maxR=Math.max(.01,...ruHist)*1.2;
+  rgCx.beginPath();
+  ruHist.forEach((v,i)=>{const px=i/(ruHist.length-1)*W,py=H-v/maxR*(H-8)-4;i===0?rgCx.moveTo(px,py):rgCx.lineTo(px,py);});
+  rgCx.strokeStyle='var(--accent3)';rgCx.lineWidth=1.5;rgCx.stroke();
+  rgCx.lineTo(W,H);rgCx.lineTo(0,H);rgCx.fillStyle='rgba(0,255,157,.13)';rgCx.fill();
 }
 
-// ============================================================
-//  SIMULATION LOOP
-// ============================================================
-let ips=0, ipsTimer=0, ipsCount=0;
-let simStartRealTime=0;
+function updHUD(st,spd){
+  el('bigT').textContent='T = '+simT.toFixed(2)+' s';
+  el('hT').textContent=simT.toFixed(2)+' s';
+  el('hDt').textContent=curDt.toFixed(4)+' s';
+  const ce=el('hCfl');ce.textContent=curCfl.toFixed(3);
+  ce.className='hs-v'+(curCfl>.8?' d':curCfl>.6?' w':'');
+  el('hIps').textContent=curIps.toFixed(0);
+  el('hHmax').textContent=st.hmax.toFixed(2)+' m';
+  el('hVmax').textContent=st.vmax.toFixed(2)+' m/s';
+  el('hSpd').textContent=spd.toFixed(1)+'×';
+  el('sHm').textContent=maxEta.toFixed(2);
+  el('sVm').textContent=maxV.toFixed(2);
+  el('sRu').textContent=maxRunup.toFixed(2);
+  el('sPe').textContent=(maxPenet/1000).toFixed(3);
+  el('sEn').textContent=(st.ke/1e9).toFixed(3);
+  el('sMa').textContent=(st.mass/1e9).toFixed(4);
+  el('ruMax').textContent=maxRunup.toFixed(2)+' m';
+}
 
-function simLoop(timestamp) {
-  if(!running) return;
-  
-  const frameStart = performance.now();
-  const ipf = iterPerFrame();
-  
+function loop(){
+  if(!running)return;
+  const ipf=pi('pIpf');
   for(let it=0;it<ipf;it++){
-    if(simTime>=tEnd()) { stop(); break; }
-    currentDt = computeDt();
-    if(currentDt<1e-6) { log('⚠ Δt trop petit, simulation arrêtée'); stop(); break; }
-    step(currentDt);
-    simTime += currentDt;
-    totalIter++;
-    iterCount++;
+    if(simT>=pv('pTend')){stopSim(true);break;}
+    curDt=computeDt();
+    if(curDt<1e-10){log('⚠ Δt nul, arrêt','e');stopSim(false);break;}
+    step(curDt);simT+=curDt;totIt++;ipsC++;
   }
-  
-  // Stats
-  const stats = computeStats();
-  hMax = Math.max(hMax, stats.hmax);
-  
-  // Update runup history
-  if(totalIter % 10 === 0) {
-    runupHistory2.push(Math.max(0,stats.runup));
-    if(runupHistory2.length>200) runupHistory2.shift();
+  const now=performance.now();
+  if(now-ipsT>600){curIps=ipsC/(now-ipsT)*1000;ipsC=0;ipsT=now;}
+  const spd=(now-realStart)/1000>.1?simT/((now-realStart)/1000):1;
+  if(totIt%15===0){
+    const si2=Math.floor(pi('pSh')/100*Nx),hm2=pv('pHmin');
+    let ru=0;
+    for(let i=Nx-1;i>=si2;i--){if(hArr[i]>hm2){ru=etaArr[i];break;}}
+    ruHist.push(Math.max(0,ru));
+    if(ruHist.length>300)ruHist.shift();
   }
-  
-  // IPS computation
-  const now = performance.now();
-  ipsCount += ipf;
-  if(now - ipsTimer > 500) {
-    ips = ipsCount / (now-ipsTimer)*1000;
-    ipsCount=0; ipsTimer=now;
-  }
-  
-  // Real speed factor
-  const realElapsed = (now - simStartRealTime)/1000;
-  const speedFactor = realElapsed>0 ? simTime/realElapsed : 1;
-  
-  // Update UI
-  simCanvas.width = simCanvas.parentElement.clientWidth;
-  simCanvas.height = simCanvas.parentElement.clientHeight;
-  
-  render();
-  renderWavePlot();
-  renderRunupGauge();
-  updateHUD(stats, speedFactor);
-  
-  animId = requestAnimationFrame(simLoop);
+  const st=compStats();
+  updHUD(st,spd);
+  resizeSC();render();renderWP();renderRG();
+  animId=requestAnimationFrame(loop);
 }
 
-function updateHUD(stats, speedFactor) {
-  const T = simTime;
-  document.getElementById('timeDisplay').textContent = `T = ${T.toFixed(2)} s`;
-  document.getElementById('hdrTime').textContent = T.toFixed(2)+' s';
-  document.getElementById('hdrDt').textContent = currentDt.toFixed(4)+' s';
-  document.getElementById('hdrCfl').textContent = currentCfl.toFixed(3);
-  document.getElementById('hdrIps').textContent = ips.toFixed(0);
-  document.getElementById('hdrHmax').textContent = stats.hmax.toFixed(2)+' m';
-  document.getElementById('hdrVmax').textContent = stats.vmax.toFixed(2)+' m/s';
-  
-  document.getElementById('statHmax').textContent = stats.hmax.toFixed(2);
-  document.getElementById('statVmax').textContent = stats.vmax.toFixed(2);
-  document.getElementById('statRunup').textContent = Math.max(0,maxRunup).toFixed(2);
-  document.getElementById('statPenetration').textContent = (maxPenetration/1000).toFixed(3)+' km';
-  document.getElementById('statEnergy').textContent = (stats.energy/1e9).toFixed(3);
-  document.getElementById('statMass').textContent = (stats.mass*rhoW()/1e9).toFixed(3);
-  document.getElementById('speedFactor').textContent = speedFactor.toFixed(1)+'×';
-  
-  // CFL color
-  const cflEl = document.getElementById('hdrCfl');
-  cflEl.className = 'stat-value' + (currentCfl>0.8?' danger':currentCfl>0.6?' warn':'');
+function doInit(){
+  Nx=pi('pNx');dx=pv('pLx')/(Nx-1);
+  simT=0;totIt=0;maxEta=0;maxV=0;maxRunup=0;maxPenet=0;
+  ruHist.length=0;curDt=0;curCfl=0;
+  buildBed();initWave();inited=true;
+  resizeSC();render();renderWP();renderRG();
+  el('hGrid').textContent=Nx+'×'+pi('pNy');
+  log('✓ Init: Nx='+Nx+', dx='+dx.toFixed(1)+'m, Lx='+pv('pLx')+'m','ok');
+  log('  Source: '+el('pWtype').value+', A='+pv('pAmp')+'m, x₀='+pv('pX0')+'m','ok');
 }
-
-// ============================================================
-//  CONTROLS
-// ============================================================
-function init() {
-  const NxVal = parseInt(document.getElementById('gridNx').value);
-  Nx = NxVal;
-  const Lx = parseFloat(document.getElementById('domainX').value);
-  Ly = parseFloat(document.getElementById('domainY').value);
-  dx = Lx / (Nx-1);
-  
-  document.getElementById('hdrGrid').textContent = `${Nx}×${parseInt(document.getElementById('gridNy').value)}`;
-  document.getElementById('cellSizeInfo').textContent = `dx=${dx.toFixed(1)}m, dy=${(Ly/parseInt(document.getElementById('gridNy').value)).toFixed(1)}m`;
-  
-  initBathCanvas();
-  buildBedProfile();
-  initWave();
-  
-  simTime=0; totalIter=0; hMax=0; maxRunup=0; maxPenetration=0;
-  runupHistory2.length=0;
-  currentDt=0; currentCfl=0;
-  initialized=true;
-  
-  document.getElementById('bathWarn').style.display='none';
-  
-  resizeCanvas();
-  render();
-  renderWavePlot();
-  log(`✓ Simulation initialisée: Nx=${Nx}, dx=${dx.toFixed(1)}m, Lx=${Lx}m`);
-}
-
-function run() {
-  if(!initialized) { init(); }
+function doRun(){
+  if(!inited)doInit();
   running=true;
-  simStartRealTime=performance.now()-simTime*1000;
-  ipsTimer=performance.now(); ipsCount=0;
-  document.getElementById('statusIndicator').className='indicator running';
-  animId=requestAnimationFrame(simLoop);
+  realStart=performance.now()-simT*1000;
+  ipsT=performance.now();ipsC=0;
+  el('ind').className='ind run';
+  animId=requestAnimationFrame(loop);
 }
-
-function pause() {
+function doPause(){
   running=false;
-  if(animId) cancelAnimationFrame(animId);
-  document.getElementById('statusIndicator').className='indicator paused';
+  if(animId){cancelAnimationFrame(animId);animId=null;}
+  el('ind').className='ind pause';
 }
-
-function stop() {
+function stopSim(ended){
   running=false;
-  if(animId) cancelAnimationFrame(animId);
-  document.getElementById('statusIndicator').className='indicator';
-  log(`■ Simulation terminée à T=${simTime.toFixed(2)}s — Run-up max: ${maxRunup.toFixed(2)}m, Pénétration: ${(maxPenetration/1000).toFixed(3)}km`);
+  if(animId){cancelAnimationFrame(animId);animId=null;}
+  el('ind').className='ind';
+  if(ended)log('■ Fin T='+simT.toFixed(1)+'s | Run-up='+maxRunup.toFixed(2)+'m | Pénét='+(maxPenet/1000).toFixed(3)+'km','ok');
+}
+function doReset(){
+  stopSim(false);inited=false;simT=0;totIt=0;
+  maxEta=0;maxV=0;maxRunup=0;maxPenet=0;ruHist.length=0;
+  resizeSC();renderE();
+  el('hT').textContent='0.00 s';el('bigT').textContent='T = 0.00 s';
+  log('↺ Reset','w');
 }
 
-function resetSim() {
-  stop();
-  initialized=false;
-  simTime=0; totalIter=0; hMax=0; maxRunup=0; maxPenetration=0;
-  runupHistory2.length=0;
-  resizeCanvas();
-  renderEmpty();
-  log('↺ Simulation réinitialisée');
-}
-
-function log(msg) {
-  const logEl = document.getElementById('simLog');
-  const t = simTime.toFixed(2);
-  logEl.innerHTML += `<div>[${t}s] ${msg}</div>`;
-  logEl.scrollTop = logEl.scrollHeight;
-}
-
-function setViz(mode) {
-  vizMode=mode;
-  document.querySelectorAll('.bottom-bar .tool-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('viz'+mode.charAt(0).toUpperCase()+mode.slice(1)).classList.add('active');
-  const units = {water:'m', speed:'m/s', flux:'m²/s', bath:'m'};
-  document.getElementById('cbUnit').textContent = units[mode]||'';
-  const grads = {
-    water:'linear-gradient(90deg,#030810,#006994,#00b4d8,#90e0ef,#caf0f8)',
-    speed:'linear-gradient(90deg,#030810,#00408b,#00d4ff,#ffcc00,#ff4444)',
-    flux:'linear-gradient(90deg,#ff4444,#444,#444,#00d4ff)',
-    bath:'linear-gradient(90deg,#001540,#006994,#c9a96e,#4a7a4a)'
-  };
-  document.getElementById('colorbarGrad').style.background=grads[mode]||grads.water;
-}
-
-function setBathTool(tool) {
-  bathTool=tool;
-  document.querySelectorAll('.bath-tools .tool-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById({brush:'tBrush',smooth:'tSmooth',flat:'tFlat'}[tool]||'tBrush').classList.add('active');
-}
-
-// Events
-document.getElementById('btnInit').onclick=init;
-document.getElementById('btnRun').onclick=run;
-document.getElementById('btnPause').onclick=pause;
-document.getElementById('btnReset').onclick=resetSim;
-
-document.getElementById('dtMode').onchange=function(){
-  document.getElementById('cflRow').style.display=this.value==='auto'?'':'none';
-  document.getElementById('dtFixedRow').style.display=this.value==='fixed'?'':'none';
+el('bInit').onclick=doInit;el('bRun').onclick=doRun;
+el('bPause').onclick=doPause;el('bReset').onclick=doReset;
+el('pDtMode').onchange=function(){
+  el('rowCfl').style.display=this.value==='auto'?'':'none';
+  el('rowFix').style.display=this.value==='fixed'?'':'none';
 };
-
-document.getElementById('iterPerFrame').oninput=function(){
-  document.getElementById('ipfVal').textContent=this.value;
-};
-document.getElementById('shorePos').oninput=function(){
-  document.getElementById('shorePosVal').textContent=this.value+'%';
-  drawBathCanvas();
-};
-
-// Domain change updates cell size display
-['domainX','domainY','gridNx','gridNy'].forEach(id=>{
-  document.getElementById(id).oninput=()=>{
-    const nx=parseInt(document.getElementById('gridNx').value)||1;
-    const ny=parseInt(document.getElementById('gridNy').value)||1;
-    const lx=parseFloat(document.getElementById('domainX').value)||1;
-    const ly=parseFloat(document.getElementById('domainY').value)||1;
-    document.getElementById('cellSizeInfo').textContent=`dx=${(lx/nx).toFixed(1)}m, dy=${(ly/ny).toFixed(1)}m`;
+el('pIpf').oninput=function(){el('ipfL').textContent=this.value;};
+['pLx','pNx'].forEach(id=>{
+  el(id).oninput=()=>{
+    const nx=pi('pNx')||1,lx=pv('pLx')||1;
+    el('dxInfo').textContent='dx = '+(lx/(nx-1)).toFixed(1)+' m';
   };
 });
 
-// Canvas probe
-simCanvas.addEventListener('click', (e)=>{
-  if(!initialized) return;
-  const rect=simCanvas.getBoundingClientRect();
-  const x=(e.clientX-rect.left)/rect.width;
-  const Lx=parseFloat(document.getElementById('domainX').value);
-  probeX=x*Lx;
-  const ci=Math.min(Nx-1,Math.floor(x*Nx));
-  const hi=h[ci], qi=qx[ci], bi=b[ci], etai=eta[ci];
-  const ui=hi>hMin()?qi/hi:0;
-  document.getElementById('probeInfo').textContent=
-    `x=${probeX.toFixed(0)}m | η=${etai.toFixed(3)}m | h=${hi.toFixed(3)}m | u=${ui.toFixed(3)}m/s | fond=${bi.toFixed(1)}m`;
-});
-
-// Resize
-window.addEventListener('resize', ()=>{
-  initBathCanvas();
-  resizeCanvas();
-  if(initialized) render(); else renderEmpty();
-});
-
-// Init on load
-window.addEventListener('load', ()=>{
-  resizeCanvas();
-  initBathCanvas();
-  renderEmpty();
-  applyPreset('coast');
-  log('TsunamiSim prêt. Configurez les paramètres puis cliquez INIT.');
-  log('Méthode: Shallow Water Equations, schéma Godunov, solveur HLLE');
-  log('Traitement mouillage/assèchement activé.');
-});
-
-// Service Worker
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
+const VCfg={
+  water:{unit:'m',grad:'linear-gradient(90deg,#020a14,#006994,#00b4d8,#caf0f8)'},
+  speed:{unit:'m/s',grad:'linear-gradient(90deg,#020a14,#00408b,#00d4ff,#ffcc00,#ff4444)'},
+  flux:{unit:'m²/s',grad:'linear-gradient(90deg,#ff4444,#222,#00d4ff)'},
+  bath:{unit:'m',grad:'linear-gradient(90deg,#001540,#006994,#c9a96e,#4a7a4a)'}
+};
+function setViz(m){
+  vizMode=m;
+  ['water','speed','flux','bath'].forEach(k=>el('vb'+k).classList.toggle('active',k===m));
+  el('cbG').style.background=VCfg[m].grad;
+  el('cbU').textContent=VCfg[m].unit;
 }
+
+sc.addEventListener('click',e=>{
+  if(!inited)return;
+  const rect=sc.getBoundingClientRect();
+  const ci=Math.min(Nx-1,Math.max(0,Math.floor((e.clientX-rect.left)/rect.width*Nx)));
+  const xi=ci*dx,h=hArr[ci],q=qArr[ci],eta=etaArr[ci],b=bArr[ci];
+  const u=h>pv('pHmin')?q/h:0;
+  el('prbTxt').textContent='x='+xi.toFixed(0)+'m | η='+eta.toFixed(3)+'m | h='+h.toFixed(3)+'m | u='+u.toFixed(3)+'m/s | fond='+b.toFixed(1)+'m';
+});
+
+const EXMAP={
+  sumatra:{pLx:80000,pNx:600,pLy:8000,pNy:150,pCfl:.45,pTend:2400,pIpf:10,pG:9.81,pManning:.025,pRho:1025,pHmin:.01,pWtype:'solitary',pAmp:10,pX0:8000,pSigma:5000,pBcL:'wall',pBcR:'open',pDep:4000,pLH:30,pSh:75,pr:'coast',name:'Tsunami Sumatra 2004'},
+  tohoku:{pLx:200000,pNx:800,pLy:10000,pNy:150,pCfl:.4,pTend:3600,pIpf:15,pG:9.81,pManning:.03,pRho:1025,pHmin:.01,pWtype:'nwave',pAmp:12,pX0:20000,pSigma:15000,pBcL:'wall',pBcR:'open',pDep:3000,pLH:20,pSh:85,pr:'shelf',name:'Tohoku 2011'},
+  lab:{pLx:500,pNx:400,pLy:100,pNy:50,pCfl:.45,pTend:60,pIpf:4,pG:9.81,pManning:.01,pRho:1000,pHmin:.001,pWtype:'solitary',pAmp:.2,pX0:50,pSigma:20,pBcL:'wall',pBcR:'wall',pDep:.5,pLH:.3,pSh:70,pr:'coast',name:'Expérience laboratoire'},
+  harbor:{pLx:30000,pNx:500,pLy:4000,pNy:100,pCfl:.45,pTend:1200,pIpf:8,pG:9.81,pManning:.02,pRho:1025,pHmin:.01,pWtype:'gaussian',pAmp:3,pX0:3000,pSigma:2000,pBcL:'wall',pBcR:'wall',pDep:1500,pLH:15,pSh:72,pr:'canyon',name:'Amplification portuaire'},
+  landslide:{pLx:40000,pNx:500,pLy:5000,pNy:100,pCfl:.45,pTend:1500,pIpf:8,pG:9.81,pManning:.02,pRho:1025,pHmin:.01,pWtype:'box',pAmp:6,pX0:15000,pSigma:4000,pBcL:'open',pBcR:'open',pDep:2000,pLH:25,pSh:78,pr:'coast',name:'Glissement sous-marin'}
+};
+function loadEx(k){
+  const ex=EXMAP[k];if(!ex)return;
+  Object.keys(ex).forEach(id=>{
+    if(id==='pr'||id==='name')return;
+    const e=el(id);if(e)e.value=ex[id];
+  });
+  updateSL();el('ipfL').textContent=ex.pIpf;
+  el('dxInfo').textContent='dx = '+(ex.pLx/(ex.pNx-1)).toFixed(1)+' m';
+  applyP(ex.pr);
+  doReset();
+  log('📌 Cas: '+ex.name,'ok');
+  log('  → Cliquer INIT puis ▶ RUN');
+}
+
+function log(msg,type){
+  const b2=el('logB'),d=document.createElement('div');
+  d.className='le'+(type?' '+type:'');
+  d.textContent='['+simT.toFixed(1)+'s] '+msg;
+  b2.appendChild(d);b2.scrollTop=b2.scrollHeight;
+}
+
+window.addEventListener('resize',()=>{resizeSC();redrawB();if(inited)render();else renderE();});
+
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    applyP('coast',true);
+    redrawB();
+    resizeSC();
+    renderE();
+    log('TsunamiSim prêt — SWE 1D, Godunov-HLLE, mouillage/assèchement');
+    log('⬆ Dessiner la bathymétrie ou charger un cas → INIT → ▶ RUN');
+  },150);
+});
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>
 </html>
