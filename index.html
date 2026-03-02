@@ -18,7 +18,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:7px
 .hs-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
 .hs-l{color:var(--dim);font-size:.56rem;letter-spacing:1px;text-transform:uppercase;}
 .hs-v{color:var(--accent);font-weight:600;font-size:.76rem;min-width:72px;text-align:center;}
-.hs-v.w{color:var(--yellow);}.hs-v.d{color:var(--red);}
+.hs-v.wcfl{color:var(--yellow);}.hs-v.dcfl{color:var(--red);}
 .hbtns{display:flex;gap:6px;align-items:center;}
 .btn{padding:5px 13px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:var(--mono);font-size:.66rem;letter-spacing:1px;cursor:pointer;transition:all .15s;text-transform:uppercase;}
 .btn:hover{background:rgba(0,212,255,.12);}.btn.primary{background:var(--accent);color:var(--bg);}
@@ -44,16 +44,16 @@ header{display:flex;align-items:center;justify-content:space-between;padding:7px
 .fi[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--accent);border-radius:50%;}
 select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(--dim);margin-left:2px;white-space:nowrap;}
 .ci{font-size:.57rem;color:var(--dim);margin-top:2px;}
-.sim-area{display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.sim-area{display:flex;flex-direction:column;overflow:hidden;}
 .cw{flex:1;position:relative;overflow:hidden;background:#020a14;}
 #sc{width:100%;height:100%;display:block;}
 .ov{position:absolute;top:8px;left:8px;background:rgba(4,10,22,.9);border:1px solid var(--border);padding:7px 11px;pointer-events:none;backdrop-filter:blur(3px);}
 .bt2{font-family:var(--display);font-size:1.45rem;color:var(--accent);letter-spacing:2px;}
 .pt{font-size:.6rem;margin-top:3px;color:var(--dim);}
-.bb{background:var(--panel);border-top:1px solid var(--border);padding:6px 13px;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:nowrap;}
+.bb{background:var(--panel);border-top:1px solid var(--border);padding:6px 13px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .tb{padding:3px 7px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:var(--mono);font-size:.58rem;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .tb:hover,.tb.active{border-color:var(--accent);color:var(--accent);}
-.sep{width:1px;height:18px;background:var(--border);flex-shrink:0;}
+.spdiv{width:1px;height:18px;background:var(--border);flex-shrink:0;}
 .cbw{display:flex;align-items:center;gap:5px;flex:1;min-width:0;}
 .cbg{flex:1;height:6px;border:1px solid var(--border);}
 .cbl{font-size:.57rem;color:var(--dim);white-space:nowrap;}
@@ -69,7 +69,7 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
 .lb{font-size:.57rem;color:var(--dim);height:100px;overflow-y:auto;line-height:1.7;padding:2px;}
 .lb::-webkit-scrollbar{width:3px;}.lb::-webkit-scrollbar-thumb{background:var(--border);}
 .le{border-left:2px solid var(--border);padding-left:4px;margin-bottom:1px;}
-.le.ok{border-color:var(--accent3);}.le.w{border-color:var(--yellow);}.le.e{border-color:var(--red);}
+.le.ok{border-color:var(--accent3);}.le.lw{border-color:var(--yellow);}.le.le2{border-color:var(--red);}
 .ex{display:block;width:100%;text-align:left;padding:5px 7px;margin-bottom:3px;border:1px solid var(--border);background:transparent;color:var(--dim);font-family:var(--mono);font-size:.6rem;cursor:pointer;transition:all .15s;}
 .ex:hover{border-color:var(--accent2);color:var(--text);background:rgba(255,107,53,.07);}
 .ex strong{color:var(--accent2);display:block;font-size:.63rem;}
@@ -80,20 +80,20 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
   <div class="logo">TSUNAMI<span>SIM</span></div>
   <div class="hs">
     <div class="hs-item"><span class="hs-l">Temps sim.</span><span class="hs-v" id="hT">0.00 s</span></div>
-    <div class="hs-item"><span class="hs-l">Δt</span><span class="hs-v" id="hDt">—</span></div>
-    <div class="hs-item"><span class="hs-l">CFL</span><span class="hs-v" id="hCfl">—</span></div>
-    <div class="hs-item"><span class="hs-l">It/s</span><span class="hs-v" id="hIps">—</span></div>
-    <div class="hs-item"><span class="hs-l">η max</span><span class="hs-v" id="hHmax">—</span></div>
-    <div class="hs-item"><span class="hs-l">|V| max</span><span class="hs-v" id="hVmax">—</span></div>
-    <div class="hs-item"><span class="hs-l">Grille</span><span class="hs-v" id="hGrid">—</span></div>
-    <div class="hs-item"><span class="hs-l">Accel.</span><span class="hs-v" id="hSpd">—</span></div>
+    <div class="hs-item"><span class="hs-l">Delta-t</span><span class="hs-v" id="hDt">--</span></div>
+    <div class="hs-item"><span class="hs-l">CFL</span><span class="hs-v" id="hCfl">--</span></div>
+    <div class="hs-item"><span class="hs-l">It/s</span><span class="hs-v" id="hIps">--</span></div>
+    <div class="hs-item"><span class="hs-l">eta max</span><span class="hs-v" id="hHmax">--</span></div>
+    <div class="hs-item"><span class="hs-l">V max</span><span class="hs-v" id="hVmax">--</span></div>
+    <div class="hs-item"><span class="hs-l">Grille</span><span class="hs-v" id="hGrid">--</span></div>
+    <div class="hs-item"><span class="hs-l">Accel.</span><span class="hs-v" id="hSpd">--</span></div>
   </div>
   <div class="hbtns">
     <div class="ind" id="ind"></div>
     <button class="btn primary" id="bInit">INIT</button>
-    <button class="btn ok" id="bRun">▶ RUN</button>
-    <button class="btn wrn" id="bPause">⏸ PAUSE</button>
-    <button class="btn bad" id="bReset">↺ RESET</button>
+    <button class="btn ok" id="bRun">RUN</button>
+    <button class="btn wrn" id="bPause">PAUSE</button>
+    <button class="btn bad" id="bReset">RESET</button>
   </div>
 </header>
 
@@ -104,21 +104,21 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
     <div class="pst">Domaine physique</div>
     <div class="fr"><span class="fl">Longueur Lx</span><input class="fi" type="number" id="pLx" value="50000" min="100"><span class="unit">m</span></div>
     <div class="fr"><span class="fl">Cellules Nx</span><input class="fi" type="number" id="pNx" value="500" min="20" max="2000"></div>
-    <div class="fr"><span class="fl">Hauteur Ly (viz)</span><input class="fi" type="number" id="pLy" value="5000" min="10"><span class="unit">m</span></div>
-    <div class="fr"><span class="fl">Cellules Ny (viz)</span><input class="fi" type="number" id="pNy" value="120" min="10"></div>
+    <div class="fr"><span class="fl">Hauteur Ly viz</span><input class="fi" type="number" id="pLy" value="5000" min="10"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Cellules Ny viz</span><input class="fi" type="number" id="pNy" value="120" min="10"></div>
     <div class="ci" id="dxInfo">dx = 100.0 m</div>
   </div>
   <div class="ps">
-    <div class="pst">Résolution temporelle</div>
-    <div class="fr"><span class="fl">Mode Δt</span>
+    <div class="pst">Resolution temporelle</div>
+    <div class="fr"><span class="fl">Mode dt</span>
       <select class="fi" id="pDtMode">
         <option value="auto">Auto (CFL)</option>
         <option value="fixed">Fixe</option>
       </select>
     </div>
     <div class="fr" id="rowCfl"><span class="fl">Nombre CFL</span><input class="fi" type="number" id="pCfl" value="0.45" min="0.05" max="0.9" step="0.05"></div>
-    <div class="fr" id="rowFix" style="display:none"><span class="fl">Δt fixe</span><input class="fi" type="number" id="pDtFix" value="1.0" min="0.001"><span class="unit">s</span></div>
-    <div class="fr"><span class="fl">Durée totale</span><input class="fi" type="number" id="pTend" value="1800"><span class="unit">s</span></div>
+    <div class="fr" id="rowFix" style="display:none"><span class="fl">dt fixe</span><input class="fi" type="number" id="pDtFix" value="1.0" min="0.001"><span class="unit">s</span></div>
+    <div class="fr"><span class="fl">Duree totale</span><input class="fi" type="number" id="pTend" value="1800"><span class="unit">s</span></div>
     <div class="fr"><span class="fl">It./frame</span>
       <input class="fi" type="range" id="pIpf" min="1" max="100" value="8">
       <span class="hs-v" id="ipfL" style="font-size:.65rem;min-width:26px">8</span>
@@ -126,9 +126,9 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
   </div>
   <div class="ps">
     <div class="pst">Physique</div>
-    <div class="fr"><span class="fl">g</span><input class="fi" type="number" id="pG" value="9.81" step="0.01"><span class="unit">m/s²</span></div>
+    <div class="fr"><span class="fl">g</span><input class="fi" type="number" id="pG" value="9.81" step="0.01"><span class="unit">m/s2</span></div>
     <div class="fr"><span class="fl">Manning n</span><input class="fi" type="number" id="pManning" value="0.025" min="0" max="0.15" step="0.001"></div>
-    <div class="fr"><span class="fl">ρ eau</span><input class="fi" type="number" id="pRho" value="1025"><span class="unit">kg/m³</span></div>
+    <div class="fr"><span class="fl">rho eau</span><input class="fi" type="number" id="pRho" value="1025"><span class="unit">kg/m3</span></div>
     <div class="fr"><span class="fl">h min wet</span><input class="fi" type="number" id="pHmin" value="0.01" min="0.001"><span class="unit">m</span></div>
   </div>
   <div class="ps">
@@ -137,26 +137,26 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
       <select class="fi" id="pWtype">
         <option value="solitary">Vague solitaire</option>
         <option value="gaussian">Gaussienne</option>
-        <option value="seiche">Sismique (seiche)</option>
-        <option value="box">Créneau</option>
+        <option value="seiche">Sismique seiche</option>
+        <option value="box">Creneau</option>
         <option value="nwave">N-wave bipolaire</option>
       </select>
     </div>
     <div class="fr"><span class="fl">Amplitude A</span><input class="fi" type="number" id="pAmp" value="5" min="0.01" step="0.5"><span class="unit">m</span></div>
-    <div class="fr"><span class="fl">Position x₀</span><input class="fi" type="number" id="pX0" value="5000"><span class="unit">m</span></div>
-    <div class="fr"><span class="fl">Largeur σ</span><input class="fi" type="number" id="pSigma" value="3000" min="10"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Position x0</span><input class="fi" type="number" id="pX0" value="5000"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Largeur sigma</span><input class="fi" type="number" id="pSigma" value="3000" min="10"><span class="unit">m</span></div>
   </div>
   <div class="ps">
     <div class="pst">Conditions aux limites</div>
     <div class="fr"><span class="fl">CL gauche</span>
       <select class="fi" id="pBcL">
-        <option value="wall">Mur réfléchissant</option>
+        <option value="wall">Mur reflechissant</option>
         <option value="open">Ouverte</option>
       </select>
     </div>
     <div class="fr"><span class="fl">CL droite</span>
       <select class="fi" id="pBcR">
-        <option value="wall">Mur réfléchissant</option>
+        <option value="wall">Mur reflechissant</option>
         <option value="open" selected>Ouverte</option>
       </select>
     </div>
@@ -174,11 +174,11 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
   </div>
   <div class="bb">
     <span style="font-size:.57rem;color:var(--dim);flex-shrink:0">VIZ :</span>
-    <button class="tb active" id="vbwater" onclick="setViz('water')">η surface</button>
-    <button class="tb" id="vbspeed" onclick="setViz('speed')">Vitesse |V|</button>
-    <button class="tb" id="vbflux" onclick="setViz('flux')">Débit Qx</button>
-    <button class="tb" id="vbbath" onclick="setViz('bath')">Fond</button>
-    <div class="sep"></div>
+    <button class="tb active" id="vbwater">eta surface</button>
+    <button class="tb" id="vbspeed">Vitesse |V|</button>
+    <button class="tb" id="vbflux">Debit Qx</button>
+    <button class="tb" id="vbbath">Fond</button>
+    <div class="spdiv"></div>
     <div class="cbw">
       <span class="cbl" id="cbMin">0</span>
       <div class="cbg" id="cbG" style="background:linear-gradient(90deg,#020a14,#006994,#00b4d8,#caf0f8)"></div>
@@ -191,42 +191,42 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
 <!-- RIGHT -->
 <div class="panel R">
   <div class="ps">
-    <div class="pst">Éditeur bathymétrie</div>
+    <div class="pst">Editeur bathymetrie</div>
     <div class="btools">
-      <button class="bt3 active" id="btd" onclick="setBT('draw')">✏ Tracer</button>
-      <button class="bt3" id="bts" onclick="setBT('smooth')">≈ Lisser</button>
-      <button class="bt3" id="btr" onclick="setBT('raise')">▲ Monter</button>
-      <button class="bt3" id="btl" onclick="setBT('lower')">▼ Baisser</button>
+      <button class="bt3 active" id="btd">Tracer</button>
+      <button class="bt3" id="bts">Lisser</button>
+      <button class="bt3" id="btr">Monter</button>
+      <button class="bt3" id="btl">Baisser</button>
     </div>
     <div class="btools">
-      <button class="bt3" onclick="applyP('coast')">🏖 Côte</button>
-      <button class="bt3" onclick="applyP('shelf')">📐 Plateau</button>
-      <button class="bt3" onclick="applyP('canyon')">〰 Canyon</button>
-      <button class="bt3" onclick="applyP('flat')">▬ Plat</button>
-      <button class="bt3" onclick="applyP('barrier')">⛰ Barrière</button>
-      <button class="bt3" onclick="resetB()" style="color:var(--red);border-color:var(--red)">↺</button>
+      <button class="bt3" id="prCoast">Cote</button>
+      <button class="bt3" id="prShelf">Plateau</button>
+      <button class="bt3" id="prCanyon">Canyon</button>
+      <button class="bt3" id="prFlat">Plat</button>
+      <button class="bt3" id="prBarrier">Barriere</button>
+      <button class="bt3" id="prReset" style="color:var(--red);border-color:var(--red)">Reset</button>
     </div>
     <canvas id="bc"></canvas>
-    <div style="display:flex;justify-content:space-between;font-size:.56rem;color:var(--dim);margin-top:3px;"><span>← Océan (x=0)</span><span>Côte / Terre →</span></div>
-    <div class="fr" style="margin-top:7px;"><span class="fl">Prof. océan</span><input class="fi" type="number" id="pDep" value="4000" min="1" oninput="redrawB()"><span class="unit">m</span></div>
-    <div class="fr"><span class="fl">Haut. terre max</span><input class="fi" type="number" id="pLH" value="30" min="0" oninput="redrawB()"><span class="unit">m</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:.56rem;color:var(--dim);margin-top:3px;"><span>Ocean (x=0)</span><span>Cote / Terre (x=Lx)</span></div>
+    <div class="fr" style="margin-top:7px;"><span class="fl">Prof. ocean</span><input class="fi" type="number" id="pDep" value="4000" min="1"><span class="unit">m</span></div>
+    <div class="fr"><span class="fl">Haut. terre max</span><input class="fi" type="number" id="pLH" value="30" min="0"><span class="unit">m</span></div>
     <div class="fr">
-      <span class="fl">Position côte</span>
-      <input class="fi" type="range" id="pSh" min="10" max="90" value="70" oninput="updateSL();redrawB()">
+      <span class="fl">Position cote</span>
+      <input class="fi" type="range" id="pSh" min="10" max="90" value="70">
       <span class="hs-v" id="shL" style="font-size:.63rem;min-width:30px">70%</span>
     </div>
-    <div style="font-size:.56rem;color:var(--dim);margin-top:2px;">⬆ Dessiner à la souris sur le canvas ci-dessus</div>
+    <div style="font-size:.56rem;color:var(--dim);margin-top:2px;">Dessiner a la souris sur le canvas ci-dessus</div>
   </div>
 
   <div class="ps">
     <div class="pst">Statistiques</div>
     <div class="mg">
-      <div class="ms"><div class="msv" id="sHm">—</div><div class="msl">η max (m)</div></div>
-      <div class="ms"><div class="msv" id="sVm">—</div><div class="msl">|V| max (m/s)</div></div>
-      <div class="ms"><div class="msv" id="sRu">—</div><div class="msl">Run-up max (m)</div></div>
-      <div class="ms"><div class="msv" id="sPe">—</div><div class="msl">Pénétration (km)</div></div>
-      <div class="ms"><div class="msv" id="sEn">—</div><div class="msl">Énergie cin. (GJ)</div></div>
-      <div class="ms"><div class="msv" id="sMa">—</div><div class="msl">Masse eau (Gt)</div></div>
+      <div class="ms"><div class="msv" id="sHm">--</div><div class="msl">eta max (m)</div></div>
+      <div class="ms"><div class="msv" id="sVm">--</div><div class="msl">V max (m/s)</div></div>
+      <div class="ms"><div class="msv" id="sRu">--</div><div class="msl">Run-up max (m)</div></div>
+      <div class="ms"><div class="msv" id="sPe">--</div><div class="msl">Penetration (km)</div></div>
+      <div class="ms"><div class="msv" id="sEn">--</div><div class="msl">Energie cin. (GJ)</div></div>
+      <div class="ms"><div class="msv" id="sMa">--</div><div class="msl">Masse eau (Gt)</div></div>
     </div>
   </div>
 
@@ -234,23 +234,23 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
     <div class="pst">Profil surface libre</div>
     <canvas id="wp"></canvas>
     <div style="display:flex;justify-content:space-between;font-size:.55rem;color:var(--dim);margin-top:2px;">
-      <span>0 m</span><span id="wpX">—</span>
+      <span>0 m</span><span id="wpX">--</span>
     </div>
   </div>
 
   <div class="ps">
     <div class="pst">Run-up au cours du temps</div>
     <canvas id="rg"></canvas>
-    <div style="font-size:.55rem;color:var(--dim);margin-top:2px;">Max: <span style="color:var(--accent3)" id="ruMax">—</span></div>
+    <div style="font-size:.55rem;color:var(--dim);margin-top:2px;">Max: <span style="color:var(--accent3)" id="ruMax">--</span></div>
   </div>
 
   <div class="ps">
-    <div class="pst">Cas prédéfinis</div>
-    <button class="ex" onclick="loadEx('sumatra')"><strong>🌊 Tsunami Sumatra 2004</strong>Océan 4000m · vague solitaire A=10m · côte douce</button>
-    <button class="ex" onclick="loadEx('tohoku')"><strong>🗾 Tohoku 2011 (simplifié)</strong>N-wave bipolaire · plateau continental · A=12m</button>
-    <button class="ex" onclick="loadEx('lab')"><strong>🧪 Expérience de laboratoire</strong>Canal 500m · vague 0.2m · validation numérique</button>
-    <button class="ex" onclick="loadEx('harbor')"><strong>⚓ Amplification en port</strong>Canyon bathymétrique · résonances et réflexions</button>
-    <button class="ex" onclick="loadEx('landslide')"><strong>🪨 Glissement sous-marin</strong>Créneau localisé · deux fronts d'ondes opposés</button>
+    <div class="pst">Cas predefinis</div>
+    <button class="ex" id="exSumatra"><strong>Tsunami Sumatra 2004</strong>Ocean 4000m, vague solitaire A=10m, cote douce</button>
+    <button class="ex" id="exTohoku"><strong>Tohoku 2011 simplifie</strong>N-wave bipolaire, plateau continental, A=12m</button>
+    <button class="ex" id="exLab"><strong>Experience laboratoire</strong>Canal 500m, vague 0.2m, validation numerique</button>
+    <button class="ex" id="exHarbor"><strong>Amplification en port</strong>Canyon bathymetrique, resonances et reflexions</button>
+    <button class="ex" id="exLandslide"><strong>Glissement sous-marin</strong>Creneau localise, deux fronts d ondes opposes</button>
   </div>
 
   <div class="ps" style="flex:1">
@@ -261,493 +261,694 @@ select.fi{background:var(--bg);cursor:pointer;}.unit{font-size:.57rem;color:var(
 </div>
 
 <script>
+(function() {
 'use strict';
-const el=id=>document.getElementById(id);
-const pv=id=>parseFloat(el(id).value)||0;
-const pi=id=>parseInt(el(id).value)||0;
 
-// ── BATH ──────────────────────────────────────────────────────────────────────
-const NPT=512;
-let bPts=new Float32Array(NPT);
-let bTool='draw',bDown=false;
+function el(id) { return document.getElementById(id); }
+function pv(id) { var v = parseFloat(el(id).value); return isNaN(v) ? 0 : v; }
+function pi(id) { var v = parseInt(el(id).value); return isNaN(v) ? 0 : v; }
 
-function n2e(n){
-  const d=pv('pDep'),lh=pv('pLH');
-  return n<=1?(n-1)*d:(n-1)*lh;
+// ── BATHYMETRY ────────────────────────────────────────────────────────────────
+var NPT = 512;
+var bPts = new Float32Array(NPT);
+var bTool = 'draw';
+var bDown = false;
+
+function n2e(n) {
+  var d = pv('pDep'), lh = pv('pLH');
+  if (n <= 1.0) return (n - 1.0) * d;
+  return (n - 1.0) * lh;
 }
 
-function applyP(pr,silent){
-  const sp=pi('pSh')/100;
-  for(let i=0;i<NPT;i++){
-    const x=i/(NPT-1);let n=0;
-    if(pr==='coast'){
-      n=x<sp?x/sp:1+(x-sp)/Math.max(.001,1-sp);
-    }else if(pr==='shelf'){
-      if(x<.25)n=.04;
-      else if(x<sp){const t=(x-.25)/(sp-.25);n=.04+.96*t;}
-      else n=1+(x-sp)/(1-sp)*.8;
-    }else if(pr==='canyon'){
-      const base=x<sp?x/sp:1+(x-sp)/(1-sp)*.5;
-      const cyn=.4*Math.exp(-((x-.4)/.07)**2);
-      n=Math.max(0,base-cyn);
-    }else if(pr==='flat'){
-      n=.3;
-    }else if(pr==='barrier'){
-      n=x<sp?x/sp:1+(x-sp)/(1-sp)*.3;
-      if(Math.abs(x-(sp-.05))<.022)n=Math.max(n,1.12);
+function applyPreset(pr) {
+  var sp = pi('pSh') / 100.0;
+  var i, x, n, t, base, cyn;
+  for (i = 0; i < NPT; i++) {
+    x = i / (NPT - 1);
+    n = 0;
+    if (pr === 'coast') {
+      if (x < sp) n = x / sp;
+      else n = 1.0 + (x - sp) / Math.max(0.001, 1.0 - sp);
+    } else if (pr === 'shelf') {
+      if (x < 0.25) n = 0.04;
+      else if (x < sp) { t = (x - 0.25) / (sp - 0.25); n = 0.04 + 0.96 * t; }
+      else n = 1.0 + (x - sp) / (1.0 - sp) * 0.8;
+    } else if (pr === 'canyon') {
+      if (x < sp) base = x / sp;
+      else base = 1.0 + (x - sp) / (1.0 - sp) * 0.5;
+      cyn = 0.4 * Math.exp(-Math.pow((x - 0.4) / 0.07, 2));
+      n = Math.max(0, base - cyn);
+    } else if (pr === 'flat') {
+      n = 0.3;
+    } else if (pr === 'barrier') {
+      if (x < sp) n = x / sp;
+      else n = 1.0 + (x - sp) / (1.0 - sp) * 0.3;
+      if (Math.abs(x - (sp - 0.05)) < 0.022) n = Math.max(n, 1.12);
     }
-    bPts[i]=Math.max(0,Math.min(1.5,n));
-  }
-  if(!silent)redrawB();
-}
-function resetB(){applyP('coast');}
-function updateSL(){el('shL').textContent=el('pSh').value+'%';}
-
-const bCv=el('bc'),bCx=bCv.getContext('2d');
-function redrawB(){
-  bCv.width=bCv.offsetWidth||240;
-  bCv.height=108;
-  const W=bCv.width,H=bCv.height;
-  const d=pv('pDep'),lh=pv('pLH'),sp=pi('pSh')/100,tot=d+lh+1,zY=H*d/tot;
-  bCx.fillStyle='#020a14';bCx.fillRect(0,0,W,H);
-  bCx.beginPath();
-  for(let i=0;i<NPT;i++){
-    const px=i/(NPT-1)*W,py=zY-n2e(bPts[i])/tot*H;
-    i===0?bCx.moveTo(px,py):bCx.lineTo(px,py);
-  }
-  bCx.lineTo(W,H);bCx.lineTo(0,H);bCx.closePath();
-  const gr=bCx.createLinearGradient(0,0,W,0);
-  gr.addColorStop(0,'rgba(0,25,65,.95)');
-  gr.addColorStop(sp,'rgba(170,130,55,.95)');
-  gr.addColorStop(1,'rgba(90,58,18,.95)');
-  bCx.fillStyle=gr;bCx.fill();
-  bCx.beginPath();
-  for(let i=0;i<NPT;i++){
-    const px=i/(NPT-1)*W,py=zY-n2e(bPts[i])/tot*H;
-    i===0?bCx.moveTo(px,py):bCx.lineTo(px,py);
-  }
-  bCx.strokeStyle='rgba(0,212,255,.88)';bCx.lineWidth=1.5;bCx.stroke();
-  bCx.beginPath();bCx.moveTo(0,zY);bCx.lineTo(W,zY);
-  bCx.strokeStyle='rgba(0,180,216,.3)';bCx.lineWidth=1;bCx.setLineDash([4,4]);bCx.stroke();bCx.setLineDash([]);
-  const shX=sp*W;
-  bCx.beginPath();bCx.moveTo(shX,0);bCx.lineTo(shX,H);
-  bCx.strokeStyle='rgba(255,107,53,.45)';bCx.lineWidth=1;bCx.setLineDash([3,3]);bCx.stroke();bCx.setLineDash([]);
-  bCx.font='9px JetBrains Mono';
-  bCx.fillStyle='rgba(0,212,255,.7)';bCx.fillText('η=0',3,zY-2);
-  bCx.fillStyle='rgba(200,160,80,.8)';bCx.fillText('+'+lh+'m',shX+3,11);
-  bCx.fillStyle='rgba(0,130,190,.7)';bCx.fillText('-'+d+'m',3,H-3);
-}
-
-function bathEv(e){
-  const rect=bCv.getBoundingClientRect();
-  const xf=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
-  const yf=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
-  const tgt=(1-yf)*1.5;
-  const ci=Math.round(xf*(NPT-1));
-  const r=Math.max(4,Math.floor(NPT*.028));
-  for(let i=Math.max(0,ci-r);i<=Math.min(NPT-1,ci+r);i++){
-    const w=Math.max(0,1-Math.abs(i-ci)/r);
-    if(bTool==='draw')bPts[i]=bPts[i]*(1-w)+tgt*w;
-    else if(bTool==='smooth'&&i>0&&i<NPT-1)bPts[i]=.7*bPts[i]+.15*(bPts[i-1]+bPts[i+1]);
-    else if(bTool==='raise')bPts[i]+=.025*w;
-    else if(bTool==='lower')bPts[i]-=.025*w;
-    bPts[i]=Math.max(0,Math.min(1.5,bPts[i]));
+    bPts[i] = Math.max(0, Math.min(1.5, n));
   }
   redrawB();
 }
-bCv.addEventListener('mousedown',e=>{bDown=true;bathEv(e);});
-document.addEventListener('mouseup',()=>{bDown=false;});
-bCv.addEventListener('mousemove',e=>{if(bDown)bathEv(e);});
-bCv.addEventListener('touchstart',e=>{e.preventDefault();bDown=true;bathEv(e.touches[0]);},{passive:false});
-bCv.addEventListener('touchmove',e=>{e.preventDefault();if(bDown)bathEv(e.touches[0]);},{passive:false});
-bCv.addEventListener('touchend',()=>{bDown=false;});
 
-function setBT(t){
-  bTool=t;
-  [['d','draw'],['s','smooth'],['r','raise'],['l','lower']].forEach(([c,n])=>el('bt'+c).classList.toggle('active',n===t));
+function updateSL() { el('shL').textContent = el('pSh').value + '%'; }
+
+var bCv = el('bc');
+var bCx = bCv.getContext('2d');
+
+function redrawB() {
+  var W = bCv.offsetWidth;
+  if (W < 10) W = 240;
+  bCv.width = W;
+  bCv.height = 108;
+  var H = 108;
+  var d = pv('pDep'), lh = pv('pLH'), sp = pi('pSh') / 100.0;
+  var tot = d + lh + 1.0;
+  var zY = H * d / tot;
+  var i, px, py, elev, gr, shX;
+
+  bCx.fillStyle = '#020a14';
+  bCx.fillRect(0, 0, W, H);
+
+  bCx.beginPath();
+  for (i = 0; i < NPT; i++) {
+    px = (i / (NPT - 1)) * W;
+    elev = n2e(bPts[i]);
+    py = zY - elev / tot * H;
+    if (i === 0) bCx.moveTo(px, py); else bCx.lineTo(px, py);
+  }
+  bCx.lineTo(W, H); bCx.lineTo(0, H); bCx.closePath();
+  gr = bCx.createLinearGradient(0, 0, W, 0);
+  gr.addColorStop(0, 'rgba(0,25,65,.95)');
+  gr.addColorStop(sp, 'rgba(170,130,55,.95)');
+  gr.addColorStop(1, 'rgba(90,58,18,.95)');
+  bCx.fillStyle = gr;
+  bCx.fill();
+
+  bCx.beginPath();
+  for (i = 0; i < NPT; i++) {
+    px = (i / (NPT - 1)) * W;
+    elev = n2e(bPts[i]);
+    py = zY - elev / tot * H;
+    if (i === 0) bCx.moveTo(px, py); else bCx.lineTo(px, py);
+  }
+  bCx.strokeStyle = 'rgba(0,212,255,.88)';
+  bCx.lineWidth = 1.5;
+  bCx.stroke();
+
+  bCx.beginPath(); bCx.moveTo(0, zY); bCx.lineTo(W, zY);
+  bCx.strokeStyle = 'rgba(0,180,216,.3)';
+  bCx.lineWidth = 1;
+  bCx.setLineDash([4, 4]); bCx.stroke(); bCx.setLineDash([]);
+
+  shX = sp * W;
+  bCx.beginPath(); bCx.moveTo(shX, 0); bCx.lineTo(shX, H);
+  bCx.strokeStyle = 'rgba(255,107,53,.45)';
+  bCx.lineWidth = 1;
+  bCx.setLineDash([3, 3]); bCx.stroke(); bCx.setLineDash([]);
+
+  bCx.font = '9px JetBrains Mono';
+  bCx.fillStyle = 'rgba(0,212,255,.7)'; bCx.fillText('eta=0', 3, zY - 2);
+  bCx.fillStyle = 'rgba(200,160,80,.8)'; bCx.fillText('+' + lh + 'm', shX + 3, 11);
+  bCx.fillStyle = 'rgba(0,130,190,.7)'; bCx.fillText('-' + d + 'm', 3, H - 3);
 }
 
-// ── SIM STATE ─────────────────────────────────────────────────────────────────
-let Nx=0,dx=0;
-let bArr=null,hArr=null,qArr=null,etaArr=null;
-let simT=0,totIt=0,running=false,inited=false,animId=null;
-let curDt=0,curCfl=0,curIps=0,ipsC=0,ipsT=0,realStart=0;
-let maxEta=0,maxV=0,maxRunup=0,maxPenet=0,ruHist=[];
-let vizMode='water';
+function bathMouse(e) {
+  var rect = bCv.getBoundingClientRect();
+  var xf = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  var yf = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+  var tgt = (1.0 - yf) * 1.5;
+  var ci = Math.round(xf * (NPT - 1));
+  var r = Math.max(4, Math.floor(NPT * 0.028));
+  var i, w;
+  for (i = Math.max(0, ci - r); i <= Math.min(NPT - 1, ci + r); i++) {
+    w = Math.max(0, 1.0 - Math.abs(i - ci) / r);
+    if (bTool === 'draw')   bPts[i] = bPts[i] * (1.0 - w) + tgt * w;
+    else if (bTool === 'smooth' && i > 0 && i < NPT - 1)
+      bPts[i] = 0.7 * bPts[i] + 0.15 * (bPts[i - 1] + bPts[i + 1]);
+    else if (bTool === 'raise') bPts[i] += 0.025 * w;
+    else if (bTool === 'lower') bPts[i] -= 0.025 * w;
+    bPts[i] = Math.max(0, Math.min(1.5, bPts[i]));
+  }
+  redrawB();
+}
 
-function buildBed(){
-  bArr=new Float64Array(Nx);
-  for(let i=0;i<Nx;i++){
-    const xf=i/(Nx-1),bi=Math.min(NPT-1,Math.floor(xf*(NPT-1)));
-    const t=xf*(NPT-1)-bi;
-    const n=bPts[bi]*(1-t)+bPts[Math.min(NPT-1,bi+1)]*t;
-    bArr[i]=n2e(n);
+bCv.addEventListener('mousedown', function(e) { bDown = true; bathMouse(e); });
+document.addEventListener('mouseup', function() { bDown = false; });
+bCv.addEventListener('mousemove', function(e) { if (bDown) bathMouse(e); });
+bCv.addEventListener('touchstart', function(e) { e.preventDefault(); bDown = true; bathMouse(e.touches[0]); }, { passive: false });
+bCv.addEventListener('touchmove', function(e) { e.preventDefault(); if (bDown) bathMouse(e.touches[0]); }, { passive: false });
+bCv.addEventListener('touchend', function() { bDown = false; });
+
+function setBT(t) {
+  bTool = t;
+  var map = { draw: 'btd', smooth: 'bts', raise: 'btr', lower: 'btl' };
+  var k;
+  for (k in map) el(map[k]).classList.toggle('active', k === t);
+}
+
+el('btd').addEventListener('click', function() { setBT('draw'); });
+el('bts').addEventListener('click', function() { setBT('smooth'); });
+el('btr').addEventListener('click', function() { setBT('raise'); });
+el('btl').addEventListener('click', function() { setBT('lower'); });
+el('prCoast').addEventListener('click', function() { applyPreset('coast'); });
+el('prShelf').addEventListener('click', function() { applyPreset('shelf'); });
+el('prCanyon').addEventListener('click', function() { applyPreset('canyon'); });
+el('prFlat').addEventListener('click', function() { applyPreset('flat'); });
+el('prBarrier').addEventListener('click', function() { applyPreset('barrier'); });
+el('prReset').addEventListener('click', function() { applyPreset('coast'); });
+el('pDep').addEventListener('input', function() { redrawB(); });
+el('pLH').addEventListener('input', function() { redrawB(); });
+el('pSh').addEventListener('input', function() { updateSL(); redrawB(); });
+
+// ── SIM STATE ─────────────────────────────────────────────────────────────────
+var Nx = 0, dx = 0;
+var bArr = null, hArr = null, qArr = null, etaArr = null;
+var simT = 0, totIt = 0, running = false, inited = false, animId = null;
+var curDt = 0, curCfl = 0, curIps = 0, ipsC = 0, ipsT = 0, realStart = 0;
+var maxEta = 0, maxVel = 0, maxRunup = 0, maxPenet = 0;
+var ruHist = [];
+var vizMode = 'water';
+
+function buildBed() {
+  bArr = new Float64Array(Nx);
+  var i, xf, bi, t, n;
+  for (i = 0; i < Nx; i++) {
+    xf = i / (Nx - 1);
+    bi = Math.min(NPT - 1, Math.floor(xf * (NPT - 1)));
+    t  = xf * (NPT - 1) - bi;
+    n  = bPts[bi] * (1.0 - t) + bPts[Math.min(NPT - 1, bi + 1)] * t;
+    bArr[i] = n2e(n);
   }
 }
 
-function initWave(){
-  hArr=new Float64Array(Nx);qArr=new Float64Array(Nx);etaArr=new Float64Array(Nx);
-  const gv=pv('pG'),A=pv('pAmp'),x0=pv('pX0'),sig=pv('pSigma'),wt=el('pWtype').value;
-  for(let i=0;i<Nx;i++){
-    const xi=i*dx;
-    hArr[i]=Math.max(0,-bArr[i]);
-    if(bArr[i]>=0)continue;
-    const depth=-bArr[i];
-    let de=0,dq=0;
-    if(wt==='solitary'){
-      const k=Math.sqrt(3*A)/(2*depth*Math.sqrt(depth));
-      de=A/Math.cosh(k*(xi-x0))**2;
-      dq=de*Math.sqrt(gv*(depth+de));
-    }else if(wt==='gaussian'){
-      de=A*Math.exp(-.5*((xi-x0)/sig)**2);
-    }else if(wt==='seiche'){
-      de=A*Math.exp(-.5*((xi-x0)/sig)**2);
-      dq=A*Math.sqrt(gv*depth)*Math.exp(-.5*((xi-x0)/sig)**2);
-    }else if(wt==='box'){
-      de=Math.abs(xi-x0)<sig/2?A:0;
-    }else if(wt==='nwave'){
-      const kk=1/(sig*.6);
-      de=A*(xi-x0)*kk*Math.exp(-.5*(kk*(xi-x0))**2);
+function initWave() {
+  hArr   = new Float64Array(Nx);
+  qArr   = new Float64Array(Nx);
+  etaArr = new Float64Array(Nx);
+  var gv = pv('pG'), A = pv('pAmp'), x0 = pv('pX0'), sig = pv('pSigma');
+  var wt = el('pWtype').value;
+  var i, xi, depth, de, dq, k, kk, coshv;
+  for (i = 0; i < Nx; i++) {
+    xi = i * dx;
+    hArr[i] = Math.max(0, -bArr[i]);
+    if (bArr[i] >= 0) continue;
+    depth = -bArr[i];
+    de = 0; dq = 0;
+    if (wt === 'solitary') {
+      k = Math.sqrt(3.0 * A) / (2.0 * depth * Math.sqrt(depth));
+      coshv = Math.cosh(k * (xi - x0));
+      de = A / (coshv * coshv);
+      dq = de * Math.sqrt(gv * (depth + de));
+    } else if (wt === 'gaussian') {
+      de = A * Math.exp(-0.5 * Math.pow((xi - x0) / sig, 2));
+    } else if (wt === 'seiche') {
+      de = A * Math.exp(-0.5 * Math.pow((xi - x0) / sig, 2));
+      dq = A * Math.sqrt(gv * depth) * Math.exp(-0.5 * Math.pow((xi - x0) / sig, 2));
+    } else if (wt === 'box') {
+      de = (Math.abs(xi - x0) < sig / 2.0) ? A : 0;
+    } else if (wt === 'nwave') {
+      kk = 1.0 / (sig * 0.6);
+      de = A * (xi - x0) * kk * Math.exp(-0.5 * Math.pow(kk * (xi - x0), 2));
     }
-    hArr[i]+=de;if(hArr[i]<0)hArr[i]=0;
-    qArr[i]+=dq;
+    hArr[i] += de;
+    if (hArr[i] < 0) hArr[i] = 0;
+    qArr[i] += dq;
   }
   updEta();
 }
-function updEta(){for(let i=0;i<Nx;i++)etaArr[i]=hArr[i]+bArr[i];}
 
-function hllFlux(hL,qL,hR,qR,gv){
-  const eps=1e-10;
-  const uL=hL>eps?qL/hL:0,uR=hR>eps?qR/hR:0;
-  const cL=Math.sqrt(gv*Math.max(0,hL)),cR=Math.sqrt(gv*Math.max(0,hR));
-  const hS=.5*(hL+hR),uS=.5*(uL+uR),cS=Math.sqrt(gv*Math.max(0,hS));
-  const sL=Math.min(uL-cL,uS-cS),sR=Math.max(uR+cR,uS+cS);
-  if(sL>=0)return[qL,uL*qL+.5*gv*hL*hL];
-  if(sR<=0)return[qR,uR*qR+.5*gv*hR*hR];
-  const ds=sR-sL;
-  return[(sR*qL-sL*qR+sL*sR*(hR-hL))/ds,
-         (sR*(uL*qL+.5*gv*hL*hL)-sL*(uR*qR+.5*gv*hR*hR)+sL*sR*(qR-qL))/ds];
+function updEta() {
+  var i;
+  for (i = 0; i < Nx; i++) etaArr[i] = hArr[i] + bArr[i];
 }
 
-function computeDt(){
-  if(el('pDtMode').value==='fixed'){curCfl=0;return pv('pDtFix');}
-  const gv=pv('pG'),hm=pv('pHmin');let ms=1e-8;
-  for(let i=0;i<Nx;i++){
-    if(hArr[i]<hm)continue;
-    const s=Math.abs(qArr[i]/hArr[i])+Math.sqrt(gv*hArr[i]);
-    if(s>ms)ms=s;
-  }
-  const dt=pv('pCfl')*dx/ms;curCfl=ms*dt/dx;return Math.min(dt,10);
+function hllFlux(hL, qL, hR, qR, gv) {
+  var eps = 1e-10;
+  var uL = hL > eps ? qL / hL : 0;
+  var uR = hR > eps ? qR / hR : 0;
+  var cL = Math.sqrt(gv * Math.max(0, hL));
+  var cR = Math.sqrt(gv * Math.max(0, hR));
+  var hS = 0.5 * (hL + hR);
+  var uS = 0.5 * (uL + uR);
+  var cS = Math.sqrt(gv * Math.max(0, hS));
+  var sL = Math.min(uL - cL, uS - cS);
+  var sR = Math.max(uR + cR, uS + cS);
+  var ds, fh, fq;
+  if (sL >= 0) return [qL, uL * qL + 0.5 * gv * hL * hL];
+  if (sR <= 0) return [qR, uR * qR + 0.5 * gv * hR * hR];
+  ds = sR - sL;
+  fh = (sR * qL - sL * qR + sL * sR * (hR - hL)) / ds;
+  fq = (sR * (uL * qL + 0.5 * gv * hL * hL) - sL * (uR * qR + 0.5 * gv * hR * hR) + sL * sR * (qR - qL)) / ds;
+  return [fh, fq];
 }
 
-function step(dt){
-  const gv=pv('pG'),mn=pv('pManning'),hm=pv('pHmin'),N=Nx;
-  const fh=new Float64Array(N+1),fq=new Float64Array(N+1);
-  for(let i=1;i<N;i++){
-    const[a,b]=hllFlux(hArr[i-1],qArr[i-1],hArr[i],qArr[i],gv);
-    fh[i]=a;fq[i]=b;
+function computeDt() {
+  if (el('pDtMode').value === 'fixed') { curCfl = 0; return pv('pDtFix'); }
+  var gv = pv('pG'), hm = pv('pHmin');
+  var ms = 1e-8, i, s;
+  for (i = 0; i < Nx; i++) {
+    if (hArr[i] < hm) continue;
+    s = Math.abs(qArr[i] / hArr[i]) + Math.sqrt(gv * hArr[i]);
+    if (s > ms) ms = s;
   }
-  const bL=el('pBcL').value,bR=el('pBcR').value;
-  if(bL==='wall'){fh[0]=0;fq[0]=.5*gv*hArr[0]*hArr[0];}
-  else{fh[0]=qArr[0];fq[0]=(hArr[0]>hm?qArr[0]*qArr[0]/hArr[0]:0)+.5*gv*hArr[0]*hArr[0];}
-  if(bR==='wall'){fh[N]=0;fq[N]=.5*gv*hArr[N-1]*hArr[N-1];}
-  else{fh[N]=qArr[N-1];fq[N]=(hArr[N-1]>hm?qArr[N-1]*qArr[N-1]/hArr[N-1]:0)+.5*gv*hArr[N-1]*hArr[N-1];}
-  const dtdx=dt/dx,hn=new Float64Array(N),qn=new Float64Array(N);
-  for(let i=0;i<N;i++){
-    hn[i]=hArr[i]-dtdx*(fh[i+1]-fh[i]);
-    if(hn[i]<0)hn[i]=0;
-    let Sb=0;
-    if(i>0&&i<N-1)Sb=-gv*hn[i]*(bArr[i+1]-bArr[i-1])/(2*dx);
-    else if(i===0)Sb=-gv*hn[i]*(bArr[1]-bArr[0])/dx;
-    else Sb=-gv*hn[i]*(bArr[N-1]-bArr[N-2])/dx;
-    let qs=qArr[i]-dtdx*(fq[i+1]-fq[i])+dt*Sb;
-    if(hn[i]>hm&&mn>0){const u=qs/hn[i];const Cf=gv*mn*mn/Math.pow(hn[i],1/3);qs/=(1+dt*Cf*Math.abs(u)/hn[i]);}
-    if(hn[i]<hm){hn[i]=0;qs=0;}
-    qn[i]=qs;
-  }
-  hArr=hn;qArr=qn;updEta();
+  var dt = pv('pCfl') * dx / ms;
+  curCfl = ms * dt / dx;
+  return Math.min(dt, 10.0);
 }
 
-function compStats(){
-  const hm=pv('pHmin'),gv=pv('pG'),rho=pv('pRho');
-  let hmax=0,vmax=0,ke=0,mass=0;
-  const sp=pi('pSh')/100,si=Math.floor(sp*Nx);
-  for(let i=0;i<Nx;i++){
-    const h=hArr[i],q=qArr[i],eta=etaArr[i];
-    if(eta>hmax)hmax=eta;
-    const v=h>hm?Math.abs(q/h):0;
-    if(v>vmax)vmax=v;
-    ke+=.5*rho*h*v*v*dx;mass+=rho*h*dx;
+function step(dt) {
+  var gv = pv('pG'), mn = pv('pManning'), hm = pv('pHmin'), N = Nx;
+  var fh = new Float64Array(N + 1);
+  var fq = new Float64Array(N + 1);
+  var i, fl, Sb, qs, u, Cf, h3rd;
+  var hn = new Float64Array(N);
+  var qn = new Float64Array(N);
+
+  for (i = 1; i < N; i++) {
+    fl = hllFlux(hArr[i-1], qArr[i-1], hArr[i], qArr[i], gv);
+    fh[i] = fl[0]; fq[i] = fl[1];
   }
-  let runup=0,penet=0;
-  for(let i=Nx-1;i>=si;i--){if(hArr[i]>hm){penet=(i-si)*dx;runup=etaArr[i];break;}}
-  if(runup>maxRunup)maxRunup=runup;
-  if(penet>maxPenet)maxPenet=penet;
-  if(hmax>maxEta)maxEta=hmax;
-  if(vmax>maxV)maxV=vmax;
-  return{hmax,vmax,ke,mass,runup,penet};
+
+  if (el('pBcL').value === 'wall') {
+    fh[0] = 0; fq[0] = 0.5 * gv * hArr[0] * hArr[0];
+  } else {
+    fh[0] = qArr[0];
+    fq[0] = (hArr[0] > hm ? qArr[0] * qArr[0] / hArr[0] : 0) + 0.5 * gv * hArr[0] * hArr[0];
+  }
+  if (el('pBcR').value === 'wall') {
+    fh[N] = 0; fq[N] = 0.5 * gv * hArr[N-1] * hArr[N-1];
+  } else {
+    fh[N] = qArr[N-1];
+    fq[N] = (hArr[N-1] > hm ? qArr[N-1] * qArr[N-1] / hArr[N-1] : 0) + 0.5 * gv * hArr[N-1] * hArr[N-1];
+  }
+
+  var dtdx = dt / dx;
+  for (i = 0; i < N; i++) {
+    hn[i] = hArr[i] - dtdx * (fh[i+1] - fh[i]);
+    if (hn[i] < 0) hn[i] = 0;
+
+    if (i > 0 && i < N - 1)
+      Sb = -gv * hn[i] * (bArr[i+1] - bArr[i-1]) / (2.0 * dx);
+    else if (i === 0)
+      Sb = -gv * hn[i] * (bArr[1] - bArr[0]) / dx;
+    else
+      Sb = -gv * hn[i] * (bArr[N-1] - bArr[N-2]) / dx;
+
+    qs = qArr[i] - dtdx * (fq[i+1] - fq[i]) + dt * Sb;
+
+    if (hn[i] > hm && mn > 0) {
+      u = qs / hn[i];
+      h3rd = Math.pow(hn[i], 1.0 / 3.0);
+      Cf = gv * mn * mn / h3rd;
+      qs = qs / (1.0 + dt * Cf * Math.abs(u) / hn[i]);
+    }
+
+    if (hn[i] < hm) { hn[i] = 0; qs = 0; }
+    qn[i] = qs;
+  }
+  hArr = hn; qArr = qn;
+  updEta();
+}
+
+function compStats() {
+  var hm = pv('pHmin'), gv = pv('pG'), rho = pv('pRho');
+  var hmax = 0, vmax = 0, ke = 0, mass = 0;
+  var sp = pi('pSh') / 100.0;
+  var si = Math.floor(sp * Nx);
+  var i, h, q, eta, v, runup, penet;
+  for (i = 0; i < Nx; i++) {
+    h = hArr[i]; q = qArr[i]; eta = etaArr[i];
+    if (eta > hmax) hmax = eta;
+    v = h > hm ? Math.abs(q / h) : 0;
+    if (v > vmax) vmax = v;
+    ke   += 0.5 * rho * h * v * v * dx;
+    mass += rho * h * dx;
+  }
+  runup = 0; penet = 0;
+  for (i = Nx - 1; i >= si; i--) {
+    if (hArr[i] > hm) { penet = (i - si) * dx; runup = etaArr[i]; break; }
+  }
+  if (runup  > maxRunup) maxRunup = runup;
+  if (penet  > maxPenet) maxPenet = penet;
+  if (hmax   > maxEta)   maxEta   = hmax;
+  if (vmax   > maxVel)   maxVel   = vmax;
+  return { hmax: hmax, vmax: vmax, ke: ke, mass: mass, runup: runup, penet: penet };
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
-const sc=el('sc'),scx=sc.getContext('2d');
-function resizeSC(){const pw=el('cw').clientWidth,ph=el('cw').clientHeight;if(pw>0&&ph>0){sc.width=pw;sc.height=ph;}}
+var sc = el('sc');
+var scx = sc.getContext('2d');
 
-function colorW(t){
-  t=Math.max(0,Math.min(1,t));
-  if(t<.33){const s=t/.33;return[0,Math.round(s*48),Math.round(28+s*100)];}
-  if(t<.66){const s=(t-.33)/.33;return[0,Math.round(48+s*128),Math.round(128+s*102)];}
-  const s=(t-.66)/.34;return[Math.round(s*215),Math.round(176+s*79),Math.round(230+s*25)];
+function resizeSC() {
+  var pw = el('cw').clientWidth, ph = el('cw').clientHeight;
+  if (pw > 0 && ph > 0) { sc.width = pw; sc.height = ph; }
 }
 
-function render(){
-  if(!inited){renderE();return;}
-  const W=sc.width,H=sc.height,d=pv('pDep'),lh=pv('pLH'),tot=d+lh+2,hm=pv('pHmin');
-  const yE=e=>H-(e+d)/tot*H;
-  let mn=1e18,mx=-1e18;
-  for(let i=0;i<Nx;i++){
-    const v=vizMode==='water'?etaArr[i]:vizMode==='speed'?(hArr[i]>hm?Math.abs(qArr[i]/hArr[i]):0):vizMode==='flux'?qArr[i]:bArr[i];
-    if(v<mn)mn=v;if(v>mx)mx=v;
+function colorW(t) {
+  t = Math.max(0, Math.min(1, t));
+  if (t < 0.33) {
+    var s1 = t / 0.33;
+    return [0, Math.round(s1 * 48), Math.round(28 + s1 * 100)];
   }
-  if(mx-mn<.001)mx=mn+.001;
-  el('cbMin').textContent=mn.toFixed(1);el('cbMax').textContent=mx.toFixed(1);
-  const img=scx.createImageData(W,H),data=img.data;
-  for(let px=0;px<W;px++){
-    const ci=Math.min(Nx-1,Math.floor(px/W*Nx));
-    const bi=bArr[ci],hi=hArr[ci],qi=qArr[ci],ei=etaArr[ci];
-    const yBed=Math.min(H,Math.max(0,yE(bi)));
-    const ySurf=hi>hm?Math.min(H,Math.max(0,yE(ei))):yBed;
-    const vv=vizMode==='water'?ei:vizMode==='speed'?(hi>hm?Math.abs(qi/hi):0):vizMode==='flux'?qi:bi;
-    const tv=Math.max(0,Math.min(1,(vv-mn)/(mx-mn)));
-    const[cr,cg,cb]=colorW(tv);
-    for(let py=0;py<H;py++){
-      const idx=(py*W+px)*4;
-      if(py>=yBed){
-        if(bi<0){data[idx]=38;data[idx+1]=26;data[idx+2]=11;}
-        else{const lt=Math.min(1,bi/(lh+1));data[idx]=Math.round(78+lt*58);data[idx+1]=Math.round(52+lt*48);data[idx+2]=14;}
-        data[idx+3]=255;
-      }else if(hi>hm&&py>=ySurf&&py<yBed){
-        const dep=(py-ySurf)/(Math.max(1,yBed-ySurf)),df=1-dep*.55;
-        data[idx]=Math.round(cr*df);data[idx+1]=Math.round(cg*df);data[idx+2]=Math.round(cb*df);
-        if(py===Math.floor(ySurf)){data[idx]=215;data[idx+1]=238;data[idx+2]=255;}
-        data[idx+3]=255;
-      }else{
-        const st=py/H;
-        data[idx]=Math.round(2+st*9);data[idx+1]=Math.round(5+st*18);data[idx+2]=Math.round(14+st*42);
-        data[idx+3]=255;
+  if (t < 0.66) {
+    var s2 = (t - 0.33) / 0.33;
+    return [0, Math.round(48 + s2 * 128), Math.round(128 + s2 * 102)];
+  }
+  var s3 = (t - 0.66) / 0.34;
+  return [Math.round(s3 * 215), Math.round(176 + s3 * 79), Math.round(230 + s3 * 25)];
+}
+
+function render() {
+  if (!inited) { renderEmpty(); return; }
+  var W = sc.width, H = sc.height;
+  var d = pv('pDep'), lh = pv('pLH'), tot = d + lh + 2.0;
+  var hm = pv('pHmin');
+  var i, px, py, ci, bi2, hi, qi, ei, yBed, ySurf, vv, tv, cr, cg, cb, dep, df, idx, st2;
+
+  function yE(e) { return H - (e + d) / tot * H; }
+
+  var mn = 1e18, mx = -1e18, v2;
+  for (i = 0; i < Nx; i++) {
+    if (vizMode === 'water') v2 = etaArr[i];
+    else if (vizMode === 'speed') v2 = hArr[i] > hm ? Math.abs(qArr[i] / hArr[i]) : 0;
+    else if (vizMode === 'flux') v2 = qArr[i];
+    else v2 = bArr[i];
+    if (v2 < mn) mn = v2;
+    if (v2 > mx) mx = v2;
+  }
+  if (mx - mn < 0.001) mx = mn + 0.001;
+  el('cbMin').textContent = mn.toFixed(1);
+  el('cbMax').textContent = mx.toFixed(1);
+
+  var img = scx.createImageData(W, H);
+  var data = img.data;
+  var col;
+
+  for (px = 0; px < W; px++) {
+    ci = Math.min(Nx - 1, Math.floor(px / W * Nx));
+    bi2 = bArr[ci]; hi = hArr[ci]; qi = qArr[ci]; ei = etaArr[ci];
+    yBed  = Math.min(H, Math.max(0, yE(bi2)));
+    ySurf = hi > hm ? Math.min(H, Math.max(0, yE(ei))) : yBed;
+
+    if (vizMode === 'water') vv = ei;
+    else if (vizMode === 'speed') vv = hi > hm ? Math.abs(qi / hi) : 0;
+    else if (vizMode === 'flux') vv = qi;
+    else vv = bi2;
+    tv = Math.max(0, Math.min(1, (vv - mn) / (mx - mn)));
+    col = colorW(tv);
+    cr = col[0]; cg = col[1]; cb = col[2];
+
+    for (py = 0; py < H; py++) {
+      idx = (py * W + px) * 4;
+      if (py >= yBed) {
+        if (bi2 < 0) {
+          data[idx] = 38; data[idx+1] = 26; data[idx+2] = 11;
+        } else {
+          var lt = Math.min(1, bi2 / (lh + 1));
+          data[idx]   = Math.round(78 + lt * 58);
+          data[idx+1] = Math.round(52 + lt * 48);
+          data[idx+2] = 14;
+        }
+        data[idx+3] = 255;
+      } else if (hi > hm && py >= ySurf && py < yBed) {
+        dep = (py - ySurf) / Math.max(1, yBed - ySurf);
+        df = 1.0 - dep * 0.55;
+        data[idx]   = Math.round(cr * df);
+        data[idx+1] = Math.round(cg * df);
+        data[idx+2] = Math.round(cb * df);
+        if (py === Math.floor(ySurf)) { data[idx] = 215; data[idx+1] = 238; data[idx+2] = 255; }
+        data[idx+3] = 255;
+      } else {
+        st2 = py / H;
+        data[idx]   = Math.round(2 + st2 * 9);
+        data[idx+1] = Math.round(5 + st2 * 18);
+        data[idx+2] = Math.round(14 + st2 * 42);
+        data[idx+3] = 255;
       }
     }
   }
-  scx.putImageData(img,0,0);
-  const sp=pi('pSh')/100,shx=sp*W;
-  scx.beginPath();scx.moveTo(shx,0);scx.lineTo(shx,H);
-  scx.strokeStyle='rgba(255,107,53,.6)';scx.lineWidth=1.5;scx.setLineDash([5,4]);scx.stroke();scx.setLineDash([]);
-  scx.fillStyle='rgba(255,107,53,.85)';scx.font='10px JetBrains Mono';scx.fillText('CÔTE',shx+4,13);
-}
-function renderE(){
-  const W=sc.width,H=sc.height;
-  scx.fillStyle='#020a14';scx.fillRect(0,0,W,H);
-  scx.fillStyle='rgba(0,212,255,.22)';scx.font='bold 20px Bebas Neue';scx.textAlign='center';
-  scx.fillText('APPUYER SUR  INIT  POUR DÉMARRER',W/2,H/2-10);
-  scx.font='12px JetBrains Mono';scx.fillStyle='rgba(0,212,255,.12)';
-  scx.fillText('Configurer la bathymétrie  →  INIT  →  ▶ RUN',W/2,H/2+16);
-  scx.textAlign='left';
+  scx.putImageData(img, 0, 0);
+
+  var sp2 = pi('pSh') / 100.0, shx = sp2 * W;
+  scx.beginPath(); scx.moveTo(shx, 0); scx.lineTo(shx, H);
+  scx.strokeStyle = 'rgba(255,107,53,.6)'; scx.lineWidth = 1.5;
+  scx.setLineDash([5, 4]); scx.stroke(); scx.setLineDash([]);
+  scx.fillStyle = 'rgba(255,107,53,.85)';
+  scx.font = '10px JetBrains Mono';
+  scx.fillText('COTE', shx + 4, 13);
 }
 
-const wpCv=el('wp'),wpCx=wpCv.getContext('2d');
-function renderWP(){
-  wpCv.width=wpCv.offsetWidth||240;wpCv.height=72;
-  const W=wpCv.width,H=wpCv.height,d=pv('pDep'),lh=pv('pLH'),tot=d+lh+2;
-  wpCx.fillStyle='#020a14';wpCx.fillRect(0,0,W,H);
-  if(!inited)return;
-  const zY=H*d/tot;
-  wpCx.beginPath();wpCx.moveTo(0,zY);wpCx.lineTo(W,zY);
-  wpCx.strokeStyle='rgba(0,180,216,.22)';wpCx.lineWidth=1;wpCx.setLineDash([3,3]);wpCx.stroke();wpCx.setLineDash([]);
+function renderEmpty() {
+  var W = sc.width, H = sc.height;
+  scx.fillStyle = '#020a14'; scx.fillRect(0, 0, W, H);
+  scx.fillStyle = 'rgba(0,212,255,.22)';
+  scx.font = 'bold 20px Bebas Neue'; scx.textAlign = 'center';
+  scx.fillText('APPUYER SUR  INIT  POUR DEMARRER', W / 2, H / 2 - 10);
+  scx.font = '12px JetBrains Mono'; scx.fillStyle = 'rgba(0,212,255,.12)';
+  scx.fillText('Configurer la bathymetrie  >  INIT  >  RUN', W / 2, H / 2 + 16);
+  scx.textAlign = 'left';
+}
+
+var wpCv = el('wp'), wpCx = wpCv.getContext('2d');
+function renderWP() {
+  wpCv.width = wpCv.offsetWidth || 240; wpCv.height = 72;
+  var W = wpCv.width, H = wpCv.height;
+  var d = pv('pDep'), lh = pv('pLH'), tot = d + lh + 2.0;
+  var hm2 = pv('pHmin');
+  wpCx.fillStyle = '#020a14'; wpCx.fillRect(0, 0, W, H);
+  if (!inited) return;
+  var zY = H * d / tot, i, px2, py2, first;
+  wpCx.beginPath(); wpCx.moveTo(0, zY); wpCx.lineTo(W, zY);
+  wpCx.strokeStyle = 'rgba(0,180,216,.22)'; wpCx.lineWidth = 1;
+  wpCx.setLineDash([3, 3]); wpCx.stroke(); wpCx.setLineDash([]);
   wpCx.beginPath();
-  for(let i=0;i<Nx;i++){const px=i/Nx*W,py=H-(bArr[i]+d)/tot*H;i===0?wpCx.moveTo(px,py):wpCx.lineTo(px,py);}
-  wpCx.strokeStyle='rgba(170,115,28,.45)';wpCx.lineWidth=1;wpCx.stroke();
-  wpCx.beginPath();let first=true;
-  for(let i=0;i<Nx;i++){
-    if(hArr[i]>pv('pHmin')){
-      const px=i/Nx*W,py=H-(etaArr[i]+d)/tot*H;
-      first?wpCx.moveTo(px,py):wpCx.lineTo(px,py);first=false;
-    }else first=true;
+  for (i = 0; i < Nx; i++) {
+    px2 = i / Nx * W; py2 = H - (bArr[i] + d) / tot * H;
+    if (i === 0) wpCx.moveTo(px2, py2); else wpCx.lineTo(px2, py2);
   }
-  wpCx.strokeStyle='rgba(0,212,255,.92)';wpCx.lineWidth=1.5;wpCx.stroke();
-  el('wpX').textContent=pv('pLx').toFixed(0)+'m';
+  wpCx.strokeStyle = 'rgba(170,115,28,.45)'; wpCx.lineWidth = 1; wpCx.stroke();
+  wpCx.beginPath(); first = true;
+  for (i = 0; i < Nx; i++) {
+    if (hArr[i] > hm2) {
+      px2 = i / Nx * W; py2 = H - (etaArr[i] + d) / tot * H;
+      if (first) { wpCx.moveTo(px2, py2); first = false; } else wpCx.lineTo(px2, py2);
+    } else first = true;
+  }
+  wpCx.strokeStyle = 'rgba(0,212,255,.92)'; wpCx.lineWidth = 1.5; wpCx.stroke();
+  el('wpX').textContent = pv('pLx').toFixed(0) + 'm';
 }
 
-const rgCv=el('rg'),rgCx=rgCv.getContext('2d');
-function renderRG(){
-  rgCv.width=rgCv.offsetWidth||240;rgCv.height=52;
-  const W=rgCv.width,H=rgCv.height;
-  rgCx.fillStyle='#020a14';rgCx.fillRect(0,0,W,H);
-  if(ruHist.length<2)return;
-  const maxR=Math.max(.01,...ruHist)*1.2;
+var rgCv = el('rg'), rgCx = rgCv.getContext('2d');
+function renderRG() {
+  rgCv.width = rgCv.offsetWidth || 240; rgCv.height = 52;
+  var W = rgCv.width, H = rgCv.height;
+  rgCx.fillStyle = '#020a14'; rgCx.fillRect(0, 0, W, H);
+  if (ruHist.length < 2) return;
+  var maxR = 0.01, i2, px3, py3;
+  for (i2 = 0; i2 < ruHist.length; i2++) if (ruHist[i2] > maxR) maxR = ruHist[i2];
+  maxR *= 1.2;
   rgCx.beginPath();
-  ruHist.forEach((v,i)=>{const px=i/(ruHist.length-1)*W,py=H-v/maxR*(H-8)-4;i===0?rgCx.moveTo(px,py):rgCx.lineTo(px,py);});
-  rgCx.strokeStyle='var(--accent3)';rgCx.lineWidth=1.5;rgCx.stroke();
-  rgCx.lineTo(W,H);rgCx.lineTo(0,H);rgCx.fillStyle='rgba(0,255,157,.13)';rgCx.fill();
-}
-
-function updHUD(st,spd){
-  el('bigT').textContent='T = '+simT.toFixed(2)+' s';
-  el('hT').textContent=simT.toFixed(2)+' s';
-  el('hDt').textContent=curDt.toFixed(4)+' s';
-  const ce=el('hCfl');ce.textContent=curCfl.toFixed(3);
-  ce.className='hs-v'+(curCfl>.8?' d':curCfl>.6?' w':'');
-  el('hIps').textContent=curIps.toFixed(0);
-  el('hHmax').textContent=st.hmax.toFixed(2)+' m';
-  el('hVmax').textContent=st.vmax.toFixed(2)+' m/s';
-  el('hSpd').textContent=spd.toFixed(1)+'×';
-  el('sHm').textContent=maxEta.toFixed(2);
-  el('sVm').textContent=maxV.toFixed(2);
-  el('sRu').textContent=maxRunup.toFixed(2);
-  el('sPe').textContent=(maxPenet/1000).toFixed(3);
-  el('sEn').textContent=(st.ke/1e9).toFixed(3);
-  el('sMa').textContent=(st.mass/1e9).toFixed(4);
-  el('ruMax').textContent=maxRunup.toFixed(2)+' m';
-}
-
-function loop(){
-  if(!running)return;
-  const ipf=pi('pIpf');
-  for(let it=0;it<ipf;it++){
-    if(simT>=pv('pTend')){stopSim(true);break;}
-    curDt=computeDt();
-    if(curDt<1e-10){log('⚠ Δt nul, arrêt','e');stopSim(false);break;}
-    step(curDt);simT+=curDt;totIt++;ipsC++;
+  for (i2 = 0; i2 < ruHist.length; i2++) {
+    px3 = i2 / (ruHist.length - 1) * W;
+    py3 = H - ruHist[i2] / maxR * (H - 8) - 4;
+    if (i2 === 0) rgCx.moveTo(px3, py3); else rgCx.lineTo(px3, py3);
   }
-  const now=performance.now();
-  if(now-ipsT>600){curIps=ipsC/(now-ipsT)*1000;ipsC=0;ipsT=now;}
-  const spd=(now-realStart)/1000>.1?simT/((now-realStart)/1000):1;
-  if(totIt%15===0){
-    const si2=Math.floor(pi('pSh')/100*Nx),hm2=pv('pHmin');
-    let ru=0;
-    for(let i=Nx-1;i>=si2;i--){if(hArr[i]>hm2){ru=etaArr[i];break;}}
-    ruHist.push(Math.max(0,ru));
-    if(ruHist.length>300)ruHist.shift();
+  rgCx.strokeStyle = 'var(--accent3)'; rgCx.lineWidth = 1.5; rgCx.stroke();
+  rgCx.lineTo(W, H); rgCx.lineTo(0, H);
+  rgCx.fillStyle = 'rgba(0,255,157,.13)'; rgCx.fill();
+}
+
+function updHUD(st, spd) {
+  el('bigT').textContent = 'T = ' + simT.toFixed(2) + ' s';
+  el('hT').textContent = simT.toFixed(2) + ' s';
+  el('hDt').textContent = curDt.toFixed(4) + ' s';
+  var ce = el('hCfl');
+  ce.textContent = curCfl.toFixed(3);
+  ce.className = 'hs-v' + (curCfl > 0.8 ? ' dcfl' : curCfl > 0.6 ? ' wcfl' : '');
+  el('hIps').textContent = curIps.toFixed(0);
+  el('hHmax').textContent = st.hmax.toFixed(2) + ' m';
+  el('hVmax').textContent = st.vmax.toFixed(2) + ' m/s';
+  el('hSpd').textContent = spd.toFixed(1) + 'x';
+  el('sHm').textContent = maxEta.toFixed(2);
+  el('sVm').textContent = maxVel.toFixed(2);
+  el('sRu').textContent = maxRunup.toFixed(2);
+  el('sPe').textContent = (maxPenet / 1000).toFixed(3);
+  el('sEn').textContent = (st.ke / 1e9).toFixed(3);
+  el('sMa').textContent = (st.mass / 1e9).toFixed(4);
+  el('ruMax').textContent = maxRunup.toFixed(2) + ' m';
+}
+
+function loop() {
+  if (!running) return;
+  var ipf = pi('pIpf'), it, now, spd, si2, hm3, i3, ru, st;
+  for (it = 0; it < ipf; it++) {
+    if (simT >= pv('pTend')) { stopSim(true); break; }
+    curDt = computeDt();
+    if (curDt < 1e-10) { addLog('dt nul, arret', 'le2'); stopSim(false); break; }
+    step(curDt); simT += curDt; totIt++; ipsC++;
   }
-  const st=compStats();
-  updHUD(st,spd);
-  resizeSC();render();renderWP();renderRG();
-  animId=requestAnimationFrame(loop);
+  now = performance.now();
+  if (now - ipsT > 600) { curIps = ipsC / (now - ipsT) * 1000; ipsC = 0; ipsT = now; }
+  spd = (now - realStart) / 1000 > 0.1 ? simT / ((now - realStart) / 1000) : 1.0;
+
+  if (totIt % 15 === 0) {
+    si2 = Math.floor(pi('pSh') / 100.0 * Nx); hm3 = pv('pHmin'); ru = 0;
+    for (i3 = Nx - 1; i3 >= si2; i3--) {
+      if (hArr[i3] > hm3) { ru = etaArr[i3]; break; }
+    }
+    ruHist.push(Math.max(0, ru));
+    if (ruHist.length > 300) ruHist.shift();
+  }
+  st = compStats();
+  updHUD(st, spd);
+  resizeSC(); render(); renderWP(); renderRG();
+  animId = requestAnimationFrame(loop);
 }
 
-function doInit(){
-  Nx=pi('pNx');dx=pv('pLx')/(Nx-1);
-  simT=0;totIt=0;maxEta=0;maxV=0;maxRunup=0;maxPenet=0;
-  ruHist.length=0;curDt=0;curCfl=0;
-  buildBed();initWave();inited=true;
-  resizeSC();render();renderWP();renderRG();
-  el('hGrid').textContent=Nx+'×'+pi('pNy');
-  log('✓ Init: Nx='+Nx+', dx='+dx.toFixed(1)+'m, Lx='+pv('pLx')+'m','ok');
-  log('  Source: '+el('pWtype').value+', A='+pv('pAmp')+'m, x₀='+pv('pX0')+'m','ok');
+function doInit() {
+  Nx = pi('pNx'); dx = pv('pLx') / (Nx - 1);
+  simT = 0; totIt = 0; maxEta = 0; maxVel = 0; maxRunup = 0; maxPenet = 0;
+  ruHist.length = 0; curDt = 0; curCfl = 0;
+  buildBed(); initWave(); inited = true;
+  resizeSC(); render(); renderWP(); renderRG();
+  el('hGrid').textContent = Nx + 'x' + pi('pNy');
+  addLog('Init: Nx=' + Nx + ', dx=' + dx.toFixed(1) + 'm, Lx=' + pv('pLx') + 'm', 'ok');
+  addLog('Source: ' + el('pWtype').value + ', A=' + pv('pAmp') + 'm, x0=' + pv('pX0') + 'm', 'ok');
 }
-function doRun(){
-  if(!inited)doInit();
-  running=true;
-  realStart=performance.now()-simT*1000;
-  ipsT=performance.now();ipsC=0;
-  el('ind').className='ind run';
-  animId=requestAnimationFrame(loop);
+function doRun() {
+  if (!inited) doInit();
+  running = true;
+  realStart = performance.now() - simT * 1000;
+  ipsT = performance.now(); ipsC = 0;
+  el('ind').className = 'ind run';
+  animId = requestAnimationFrame(loop);
 }
-function doPause(){
-  running=false;
-  if(animId){cancelAnimationFrame(animId);animId=null;}
-  el('ind').className='ind pause';
+function doPause() {
+  running = false;
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  el('ind').className = 'ind pause';
 }
-function stopSim(ended){
-  running=false;
-  if(animId){cancelAnimationFrame(animId);animId=null;}
-  el('ind').className='ind';
-  if(ended)log('■ Fin T='+simT.toFixed(1)+'s | Run-up='+maxRunup.toFixed(2)+'m | Pénét='+(maxPenet/1000).toFixed(3)+'km','ok');
+function stopSim(ended) {
+  running = false;
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  el('ind').className = 'ind';
+  if (ended) addLog('Fin T=' + simT.toFixed(1) + 's | Run-up=' + maxRunup.toFixed(2) + 'm | Penet=' + (maxPenet/1000).toFixed(3) + 'km', 'ok');
 }
-function doReset(){
-  stopSim(false);inited=false;simT=0;totIt=0;
-  maxEta=0;maxV=0;maxRunup=0;maxPenet=0;ruHist.length=0;
-  resizeSC();renderE();
-  el('hT').textContent='0.00 s';el('bigT').textContent='T = 0.00 s';
-  log('↺ Reset','w');
+function doReset() {
+  stopSim(false); inited = false; simT = 0; totIt = 0;
+  maxEta = 0; maxVel = 0; maxRunup = 0; maxPenet = 0; ruHist.length = 0;
+  resizeSC(); renderEmpty();
+  el('hT').textContent = '0.00 s'; el('bigT').textContent = 'T = 0.00 s';
+  addLog('Reset', 'lw');
 }
 
-el('bInit').onclick=doInit;el('bRun').onclick=doRun;
-el('bPause').onclick=doPause;el('bReset').onclick=doReset;
-el('pDtMode').onchange=function(){
-  el('rowCfl').style.display=this.value==='auto'?'':'none';
-  el('rowFix').style.display=this.value==='fixed'?'':'none';
-};
-el('pIpf').oninput=function(){el('ipfL').textContent=this.value;};
-['pLx','pNx'].forEach(id=>{
-  el(id).oninput=()=>{
-    const nx=pi('pNx')||1,lx=pv('pLx')||1;
-    el('dxInfo').textContent='dx = '+(lx/(nx-1)).toFixed(1)+' m';
-  };
+el('bInit').addEventListener('click', doInit);
+el('bRun').addEventListener('click', doRun);
+el('bPause').addEventListener('click', doPause);
+el('bReset').addEventListener('click', doReset);
+
+el('pDtMode').addEventListener('change', function() {
+  el('rowCfl').style.display = this.value === 'auto' ? '' : 'none';
+  el('rowFix').style.display = this.value === 'fixed' ? '' : 'none';
+});
+el('pIpf').addEventListener('input', function() { el('ipfL').textContent = this.value; });
+el('pLx').addEventListener('input', function() {
+  var nx = pi('pNx') || 1, lx = pv('pLx') || 1;
+  el('dxInfo').textContent = 'dx = ' + (lx / (nx - 1)).toFixed(1) + ' m';
+});
+el('pNx').addEventListener('input', function() {
+  var nx = pi('pNx') || 1, lx = pv('pLx') || 1;
+  el('dxInfo').textContent = 'dx = ' + (lx / (nx - 1)).toFixed(1) + ' m';
 });
 
-const VCfg={
-  water:{unit:'m',grad:'linear-gradient(90deg,#020a14,#006994,#00b4d8,#caf0f8)'},
-  speed:{unit:'m/s',grad:'linear-gradient(90deg,#020a14,#00408b,#00d4ff,#ffcc00,#ff4444)'},
-  flux:{unit:'m²/s',grad:'linear-gradient(90deg,#ff4444,#222,#00d4ff)'},
-  bath:{unit:'m',grad:'linear-gradient(90deg,#001540,#006994,#c9a96e,#4a7a4a)'}
+var VCfg = {
+  water:  { unit: 'm',    grad: 'linear-gradient(90deg,#020a14,#006994,#00b4d8,#caf0f8)' },
+  speed:  { unit: 'm/s',  grad: 'linear-gradient(90deg,#020a14,#00408b,#00d4ff,#ffcc00,#ff4444)' },
+  flux:   { unit: 'm2/s', grad: 'linear-gradient(90deg,#ff4444,#222,#00d4ff)' },
+  bath:   { unit: 'm',    grad: 'linear-gradient(90deg,#001540,#006994,#c9a96e,#4a7a4a)' }
 };
-function setViz(m){
-  vizMode=m;
-  ['water','speed','flux','bath'].forEach(k=>el('vb'+k).classList.toggle('active',k===m));
-  el('cbG').style.background=VCfg[m].grad;
-  el('cbU').textContent=VCfg[m].unit;
+function setViz(m) {
+  vizMode = m;
+  var keys = ['water', 'speed', 'flux', 'bath'], k;
+  for (k = 0; k < keys.length; k++)
+    el('vb' + keys[k]).classList.toggle('active', keys[k] === m);
+  el('cbG').style.background = VCfg[m].grad;
+  el('cbU').textContent = VCfg[m].unit;
 }
+el('vbwater').addEventListener('click', function() { setViz('water'); });
+el('vbspeed').addEventListener('click', function() { setViz('speed'); });
+el('vbflux').addEventListener('click',  function() { setViz('flux');  });
+el('vbbath').addEventListener('click',  function() { setViz('bath');  });
 
-sc.addEventListener('click',e=>{
-  if(!inited)return;
-  const rect=sc.getBoundingClientRect();
-  const ci=Math.min(Nx-1,Math.max(0,Math.floor((e.clientX-rect.left)/rect.width*Nx)));
-  const xi=ci*dx,h=hArr[ci],q=qArr[ci],eta=etaArr[ci],b=bArr[ci];
-  const u=h>pv('pHmin')?q/h:0;
-  el('prbTxt').textContent='x='+xi.toFixed(0)+'m | η='+eta.toFixed(3)+'m | h='+h.toFixed(3)+'m | u='+u.toFixed(3)+'m/s | fond='+b.toFixed(1)+'m';
+sc.addEventListener('click', function(e) {
+  if (!inited) return;
+  var rect = sc.getBoundingClientRect();
+  var ci2 = Math.min(Nx-1, Math.max(0, Math.floor((e.clientX - rect.left) / rect.width * Nx)));
+  var xi2 = ci2 * dx;
+  var h2 = hArr[ci2], q2 = qArr[ci2], eta2 = etaArr[ci2], b2 = bArr[ci2];
+  var u2 = h2 > pv('pHmin') ? q2 / h2 : 0;
+  el('prbTxt').textContent = 'x=' + xi2.toFixed(0) + 'm | eta=' + eta2.toFixed(3) + 'm | h=' + h2.toFixed(3) + 'm | u=' + u2.toFixed(3) + 'm/s | fond=' + b2.toFixed(1) + 'm';
 });
 
-const EXMAP={
-  sumatra:{pLx:80000,pNx:600,pLy:8000,pNy:150,pCfl:.45,pTend:2400,pIpf:10,pG:9.81,pManning:.025,pRho:1025,pHmin:.01,pWtype:'solitary',pAmp:10,pX0:8000,pSigma:5000,pBcL:'wall',pBcR:'open',pDep:4000,pLH:30,pSh:75,pr:'coast',name:'Tsunami Sumatra 2004'},
-  tohoku:{pLx:200000,pNx:800,pLy:10000,pNy:150,pCfl:.4,pTend:3600,pIpf:15,pG:9.81,pManning:.03,pRho:1025,pHmin:.01,pWtype:'nwave',pAmp:12,pX0:20000,pSigma:15000,pBcL:'wall',pBcR:'open',pDep:3000,pLH:20,pSh:85,pr:'shelf',name:'Tohoku 2011'},
-  lab:{pLx:500,pNx:400,pLy:100,pNy:50,pCfl:.45,pTend:60,pIpf:4,pG:9.81,pManning:.01,pRho:1000,pHmin:.001,pWtype:'solitary',pAmp:.2,pX0:50,pSigma:20,pBcL:'wall',pBcR:'wall',pDep:.5,pLH:.3,pSh:70,pr:'coast',name:'Expérience laboratoire'},
-  harbor:{pLx:30000,pNx:500,pLy:4000,pNy:100,pCfl:.45,pTend:1200,pIpf:8,pG:9.81,pManning:.02,pRho:1025,pHmin:.01,pWtype:'gaussian',pAmp:3,pX0:3000,pSigma:2000,pBcL:'wall',pBcR:'wall',pDep:1500,pLH:15,pSh:72,pr:'canyon',name:'Amplification portuaire'},
-  landslide:{pLx:40000,pNx:500,pLy:5000,pNy:100,pCfl:.45,pTend:1500,pIpf:8,pG:9.81,pManning:.02,pRho:1025,pHmin:.01,pWtype:'box',pAmp:6,pX0:15000,pSigma:4000,pBcL:'open',pBcR:'open',pDep:2000,pLH:25,pSh:78,pr:'coast',name:'Glissement sous-marin'}
+var EXMAP = {
+  sumatra:   { pLx:80000,  pNx:600, pLy:8000,  pNy:150, pCfl:.45, pTend:2400, pIpf:10, pG:9.81, pManning:.025, pRho:1025, pHmin:.01,  pWtype:'solitary', pAmp:10,  pX0:8000,  pSigma:5000,  pBcL:'wall', pBcR:'open', pDep:4000, pLH:30, pSh:75, pr:'coast',   name:'Tsunami Sumatra 2004' },
+  tohoku:    { pLx:200000, pNx:800, pLy:10000, pNy:150, pCfl:.4,  pTend:3600, pIpf:15, pG:9.81, pManning:.03,  pRho:1025, pHmin:.01,  pWtype:'nwave',    pAmp:12,  pX0:20000, pSigma:15000, pBcL:'wall', pBcR:'open', pDep:3000, pLH:20, pSh:85, pr:'shelf',   name:'Tohoku 2011' },
+  lab:       { pLx:500,    pNx:400, pLy:100,   pNy:50,  pCfl:.45, pTend:60,   pIpf:4,  pG:9.81, pManning:.01,  pRho:1000, pHmin:.001, pWtype:'solitary', pAmp:.2,  pX0:50,    pSigma:20,    pBcL:'wall', pBcR:'wall', pDep:.5,   pLH:.3, pSh:70, pr:'coast',   name:'Experience laboratoire' },
+  harbor:    { pLx:30000,  pNx:500, pLy:4000,  pNy:100, pCfl:.45, pTend:1200, pIpf:8,  pG:9.81, pManning:.02,  pRho:1025, pHmin:.01,  pWtype:'gaussian', pAmp:3,   pX0:3000,  pSigma:2000,  pBcL:'wall', pBcR:'wall', pDep:1500, pLH:15, pSh:72, pr:'canyon',  name:'Amplification portuaire' },
+  landslide: { pLx:40000,  pNx:500, pLy:5000,  pNy:100, pCfl:.45, pTend:1500, pIpf:8,  pG:9.81, pManning:.02,  pRho:1025, pHmin:.01,  pWtype:'box',      pAmp:6,   pX0:15000, pSigma:4000,  pBcL:'open', pBcR:'open', pDep:2000, pLH:25, pSh:78, pr:'coast',   name:'Glissement sous-marin' }
 };
-function loadEx(k){
-  const ex=EXMAP[k];if(!ex)return;
-  Object.keys(ex).forEach(id=>{
-    if(id==='pr'||id==='name')return;
-    const e=el(id);if(e)e.value=ex[id];
-  });
-  updateSL();el('ipfL').textContent=ex.pIpf;
-  el('dxInfo').textContent='dx = '+(ex.pLx/(ex.pNx-1)).toFixed(1)+' m';
-  applyP(ex.pr);
+
+function loadEx(k) {
+  var ex = EXMAP[k]; if (!ex) return;
+  var keys = Object.keys(ex), id, e2;
+  for (var ki = 0; ki < keys.length; ki++) {
+    id = keys[ki];
+    if (id === 'pr' || id === 'name') continue;
+    e2 = el(id); if (e2) e2.value = ex[id];
+  }
+  updateSL();
+  el('ipfL').textContent = ex.pIpf;
+  el('dxInfo').textContent = 'dx = ' + (ex.pLx / (ex.pNx - 1)).toFixed(1) + ' m';
+  applyPreset(ex.pr);
   doReset();
-  log('📌 Cas: '+ex.name,'ok');
-  log('  → Cliquer INIT puis ▶ RUN');
+  addLog('Cas charge: ' + ex.name, 'ok');
+  addLog('Cliquer INIT puis RUN');
 }
 
-function log(msg,type){
-  const b2=el('logB'),d=document.createElement('div');
-  d.className='le'+(type?' '+type:'');
-  d.textContent='['+simT.toFixed(1)+'s] '+msg;
-  b2.appendChild(d);b2.scrollTop=b2.scrollHeight;
+el('exSumatra').addEventListener('click',   function() { loadEx('sumatra'); });
+el('exTohoku').addEventListener('click',    function() { loadEx('tohoku'); });
+el('exLab').addEventListener('click',       function() { loadEx('lab'); });
+el('exHarbor').addEventListener('click',    function() { loadEx('harbor'); });
+el('exLandslide').addEventListener('click', function() { loadEx('landslide'); });
+
+function addLog(msg, type) {
+  var b2 = el('logB');
+  var d = document.createElement('div');
+  d.className = 'le' + (type ? ' ' + type : '');
+  d.textContent = '[' + simT.toFixed(1) + 's] ' + msg;
+  b2.appendChild(d); b2.scrollTop = b2.scrollHeight;
 }
 
-window.addEventListener('resize',()=>{resizeSC();redrawB();if(inited)render();else renderE();});
-
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    applyP('coast',true);
-    redrawB();
-    resizeSC();
-    renderE();
-    log('TsunamiSim prêt — SWE 1D, Godunov-HLLE, mouillage/assèchement');
-    log('⬆ Dessiner la bathymétrie ou charger un cas → INIT → ▶ RUN');
-  },150);
+window.addEventListener('resize', function() {
+  resizeSC(); redrawB();
+  if (inited) render(); else renderEmpty();
 });
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    applyPreset('coast');
+    resizeSC();
+    renderEmpty();
+    addLog('TsunamiSim pret - SWE 1D, Godunov-HLLE');
+    addLog('Dessiner la bathymetrie ou charger un cas, puis INIT > RUN');
+  }, 150);
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function() {});
+}
+
+})();
 </script>
 </body>
 </html>
